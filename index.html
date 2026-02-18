@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoveAndGoPR</title>
+
+</head>
+<body>
+
+<header class="hero">
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <h1>MoveAnd<span class="green">GoPR</span></h1>
+    <p>Soluciones en bienes raíces, mudanza y mantenimiento</p>
+    <div class="hero-buttons">
+      <a href="#services" class="btn dark">Ver Servicios</a>
+      <button class="btn pink" onclick="alert('Instagram message sent!')">Mensaje por Instagram</button>
+      <button class="btn blue" onclick="alert('Facebook message sent!')">Mensaje por Facebook</button>
+    </div>
+  </div>
+</header>
+
+<section id="services" class="services">
+  <h2>Nuestros Servicios</h2>
+
+  <div class="service-cards">
+    <div class="card" onclick="location.href='map.html'">
+      <div class="icon">🏠</div>
+      <h3>Agente Inmobiliario</h3>
+      <p>Asesoría para compra, venta y alquiler de propiedades.</p>
+    </div>
+
+    <div class="card" onclick="location.href='moving.html'">
+      <div class="icon">🚚</div>
+      <h3>Servicio de Mudanza</h3>
+      <p>Mudanzas seguras y eficientes a nivel local.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 MoveAndGoPR
+</footer>
+<style>
+    body {
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f9;
+}
+
+.hero {
+  height:80vh;
+  background:url('https://images.unsplash.com/photo-1501183638710-841dd1904471') center/cover;
+  position:relative;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.overlay {
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,80,0.7);
+}
+
+.hero-content {
+  position:relative;
+  z-index:2;
+}
+
+.green { color:#80ff00; }
+
+.btn {
+  padding:12px 20px;
+  margin:10px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-block;
+}
+
+.dark { background:#333; color:white; }
+.pink { background:#e60073; color:white; }
+.blue { background:#2d6cdf; color:white; }
+
+.services {
+  padding:60px;
+  text-align:center;
+}
+
+.service-cards {
+  display:flex;
+  justify-content:center;
+  gap:40px;
+}
+
+.card {
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  width:300px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.card:hover { transform:translateY(-5px); }
+
+.icon { font-size:40px; }
+
+footer {
+  text-align:center;
+  padding:20px;
+  background:#1d2b3a;
+  color:white;
+}
+
+.container { padding:40px; }
+
+.back { text-decoration:none; display:inline-block; margin-bottom:20px; }
+
+.filters button {
+  margin:5px;
+  padding:8px 15px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.properties {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  margin-top:20px;
+}
+
+.property-card {
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.1);
+}
+
+.calendar-container, .time-container {
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin:20px 0;
+}
+
+.day {
+  display:inline-block;
+  width:40px;
+  height:40px;
+  line-height:40px;
+  margin:5px;
+  text-align:center;
+  background:#eaeaea;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.day.selected { background:#2d6cdf; color:white; }
+
+.time-btn {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  background:#ddd;
+}
+
+.time-btn.selected {
+  background:#28a745;
+  color:white;
+}
+
+.confirm {
+  margin-top:20px;
+  padding:12px;
+  background:#28a745;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+</style>
+
+</body>
+</html>
