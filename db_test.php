@@ -1,5 +1,11 @@
 <?php
 require_once 'config.php';
+session_start();
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
 
 if (isset($_GET['delete_id']) && isset($_GET['table'])) {
     $table = $_GET['table'];

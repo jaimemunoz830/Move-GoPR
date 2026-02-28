@@ -11,8 +11,9 @@ session_start();
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<?php include 'header.php'; ?>
 <header class="hero">
+  
   <div class="overlay"></div>
   <div class="hero-content">
     <h1>MoveAnd<span class="green">GoPR</span></h1>
