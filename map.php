@@ -104,7 +104,7 @@ body{
 </head>
 
 <body>
-
+<?php include 'header.php'; ?>
 <button class="backBtn" onclick="goBack()">Back</button>
 
 <div class="filterBtns">
@@ -203,5 +203,6 @@ function filterProperties(type){
 loadProperties();
 
 </script>
+<?php include 'footer.php'; ?>
 </body>
 </html>

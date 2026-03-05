@@ -80,7 +80,7 @@ body {
 </style>
 </head>
 <body>
-
+<?php include 'header.php'; ?>
 <div class="container">
 
   <div class="box">
@@ -153,6 +153,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
 });
 </script>
-
+<?php include 'footer.php'; ?>
 </body>
 </html>
