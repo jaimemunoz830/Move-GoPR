@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 28, 2026 at 09:41 AM
+-- Generation Time: Apr 04, 2026 at 05:16 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -35,32 +35,6 @@ CREATE TABLE `jobs` (
   `status` enum('scheduled','in_progress','completed','cancelled') NOT NULL DEFAULT 'scheduled',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `locations`
---
-
-CREATE TABLE `locations` (
-  `id` smallint(5) UNSIGNED NOT NULL,
-  `municipality` varchar(80) NOT NULL,
-  `region` enum('Norte','Sur','Este','Oeste','Centro','Metro') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `locations`
---
-
-INSERT INTO `locations` (`id`, `municipality`, `region`) VALUES
-(1, 'San Juan', 'Metro'),
-(2, 'Bayamón', 'Metro'),
-(3, 'Carolina', 'Metro'),
-(4, 'Ponce', 'Sur'),
-(5, 'Mayagüez', 'Oeste'),
-(6, 'Arecibo', 'Norte'),
-(7, 'Caguas', 'Centro'),
-(8, 'Fajardo', 'Este');
 
 -- --------------------------------------------------------
 
@@ -149,13 +123,6 @@ ALTER TABLE `jobs`
   ADD UNIQUE KEY `uq_jobs_quote` (`quote_id`);
 
 --
--- Indexes for table `locations`
---
-ALTER TABLE `locations`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_locations_municipality` (`municipality`);
-
---
 -- Indexes for table `payments`
 --
 ALTER TABLE `payments`
@@ -195,12 +162,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `jobs`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `locations`
---
-ALTER TABLE `locations`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `payments`
@@ -252,8 +213,8 @@ ALTER TABLE `quotes`
 -- Constraints for table `quote_requests`
 --
 ALTER TABLE `quote_requests`
-  ADD CONSTRAINT `fk_qr_dropoff` FOREIGN KEY (`dropoff_location_id`) REFERENCES `locations` (`id`),
-  ADD CONSTRAINT `fk_qr_pickup` FOREIGN KEY (`pickup_location_id`) REFERENCES `locations` (`id`),
+  ADD CONSTRAINT `fk_qr_dropoff` FOREIGN KEY (`dropoff_location_id`) REFERENCES `municipios` (`id`),
+  ADD CONSTRAINT `fk_qr_pickup` FOREIGN KEY (`pickup_location_id`) REFERENCES `municipios` (`id`),
   ADD CONSTRAINT `fk_qr_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
