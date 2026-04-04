@@ -555,3 +555,204 @@ body {
 .floating-btn.instagram {
     background-color: #E4405F;
 }
+
+
+
+
+/* Contenedor general */
+.comparacion {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 40px 0;
+}
+
+/* Cada tarjeta */
+.comparacion-item {
+  width: 320px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+/* Título del servicio */
+.comparacion-item h3 {
+  background: #222;
+  color: white;
+  padding: 12px;
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Contenedor de imágenes */
+.comparacion-fotos {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Etiquetas Antes / Después */
+.etiqueta {
+  font-weight: bold;
+  padding: 6px 0;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.antes {
+  background: #d9534f; /* rojo */
+}
+
+.despues {
+  background: #5cb85c; /* verde */
+}
+
+
+
+
+/*Ejemplo*/
+/* ====== COLORES DE LA MARCA ====== */
+:root {
+  --color-principal: #3B6E1A;   /* Verde Move & Go PR */
+  --color-secundario: #4E8F22;  /* Verde oscuro */
+  --color-acento: #22C55E;      /* Verde brillante */
+  --color-texto: #1a1a1a;
+}
+
+/* ====== TITULO DEL SERVICIO ====== */
+.carousel-item h3 {
+  font-weight: 700;
+  color: var(--color-secundario);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ====== IMÁGENES ====== */
+.carousel-item img {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform .3s ease;
+}
+
+.carousel-item img:hover {
+  transform: scale(1.02);
+}
+
+/* ====== ETIQUETAS ANTES / DESPUÉS ====== */
+.carousel-item p {
+  font-size: 1.1rem;
+  font-weight: 100;
+  margin-top: 8px;
+}
+
+.text-danger {
+  color: #C53030 !important; /* Rojo elegante */
+}
+
+.text-success {
+  color: var(--color-principal) !important;
+}
+
+/* ====== CONTROLES DEL CARRUSEL ====== */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg);
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  background-color: rgba(0,0,0,0.15);
+  border-radius: 50%;
+}
+
+/* ====== ESPACIADO GENERAL ====== */
+.carousel-item {
+  padding: 30px 0;
+}
+/* Estilo profesional tipo "hero image" */
+.carousel-item img {
+  width: 100%;
+  height: 380px; /* Ajusta según tu diseño */
+  object-fit: cover; /* Recorte elegante sin deformar */
+  border-radius: 14px; /* Igual que la guagua */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15); /* Sombra suave profesional */
+}
+@media (max-width: 768px) {
+  .carousel-item img {
+    height: 250px;
+  }
+}
+
+/* Fondo oscuro del lightbox */
+#lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Imagen ampliada */
+#lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  animation: fadeIn .3s ease;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Botón verde corporativo */
+.btn-success {
+  background-color: #4E8F22 !important;   /* Verde principal */
+  border-color: #3B6E1A !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 10px;
+  transition: all .3s ease;
+}
+
+/* Hover más oscuro y elegante */
+.btn-success:hover {
+  background-color: #3B6E1A !important;   /* Verde oscuro */
+  border-color: #4E8F22 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.btn-volver {
+  background-color: transparent;
+  border: 2px solid #4E8F22; /* Verde corporativo */
+  color: #3B6E1A;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 10px;
+  transition: all .3s ease;
+}
+
+.btn-volver:hover {
+  background-color: #4E8F22;
+  color: white;
+  transform: translateY(-2px);
+}
+
+
