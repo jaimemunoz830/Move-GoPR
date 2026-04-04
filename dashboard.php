@@ -1,7 +1,19 @@
 <?php
+/**
+ * dashboard.php
+ * Panel de administración principal para MoveAndGoPR. 
+ * Permite a los administradores ver estadísticas clave, gestionar propiedades, etc
+ * 
+ * 
+ * @author     Christian
+ * @author     Jaime A. Muñoz Rodriguez
+ * @version    1.0
+ */
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require_once 'config.php';
 session_start();
 
-//Solamente administradores permitidos
 if (!isset($_SESSION['role'])) {
     header("Location: login.php");
     exit();
@@ -12,47 +24,100 @@ if ($_SESSION['role'] !== 'admin') {
     exit();
 }
 
+
+$section = $_GET['section'] ?? 'overview';
+$allowed_sections = ['overview', 'properties', 'quotes', 'users'];
+if (!in_array($section, $allowed_sections)) {
+    $section = 'overview';
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard | MoveAndGoPR</title>
     <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .sidebar a.active {
+            color: #ffffff;
+            background: #334155;
+            border-radius: 5px;
+            padding: 5px 8px;
+            margin-left: -8px;
+        }
+        .sidebar a {
+            padding: 5px 8px;
+            margin-left: -8px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+        .sidebar a:hover {
+            background: #2d3f55;
+        }
+        .sidebar .nav-section-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin: 18px 0 6px 0;
+        }
+        .sidebar .nav-divider {
+            border: none;
+            border-top: 1px solid #334155;
+            margin: 12px 0;
+        }
+    </style>
 </head>
 <body>
 
 <div class="admin-container">
-    
+
     <div class="sidebar">
         <h2>Admin Panel</h2>
-        <a href="dashboard.php">Dashboard</a>
-        <a href="#">Manage Services</a>
-        <a href="#">Manage Properties</a>
-        <a href="#">Manage Users</a>
-        <a href="index.php">Back to Website</a>
-        <a href="logout.php">Logout</a>
+
+        <p class="nav-section-label">General</p>
+        <a href="dashboard.php?section=overview"
+           class="<?php echo $section === 'overview' ? 'active' : '' ?>">
+            Dashboard
+        </a>
+
+        <p class="nav-section-label">Gestión</p>
+        <a href="dashboard.php?section=properties"
+           class="<?php echo $section === 'properties' ? 'active' : '' ?>">
+            Propiedades
+        </a>
+        <a href="dashboard.php?section=quotes"
+           class="<?php echo $section === 'quotes' ? 'active' : '' ?>">
+            Cotizaciones
+        </a>
+        <a href="dashboard.php?section=users"
+           class="<?php echo $section === 'users' ? 'active' : '' ?>">
+            Usuarios
+        </a>
+
+        <hr class="nav-divider">
+        <a href="index.php">← Volver al sitio</a>
+        <a href="logout.php">Cerrar sesión</a>
     </div>
 
     <div class="main-content">
-        <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_name']); ?></h1>
-        <p>Aqui se maneja y controla la pagina.</p>
-
-        <div class="card">
-            <h3>Total Services</h3>
-            <p>0</p>
-        </div>
-
-        <div class="card">
-            <h3>Total Properties</h3>
-            <p>0</p>
-        </div>
-
-        <div class="card">
-            <h3>Total Users</h3>
-            <p>0</p>
-        </div>
+        <?php
+        switch ($section) {
+            case 'properties':
+                include 'includes/properties_panel.php';
+                break;
+            case 'quotes':
+                echo '<h1>Cotizaciones</h1><p style="color:#888;">Esta sección está en desarrollo.</p>';
+                break;
+            case 'users':
+                echo '<h1>Usuarios</h1><p style="color:#888;">Esta sección está en desarrollo.</p>';
+                break;
+            default:
+                include 'includes/overview_panel.php';
+                break;
+        }
+        ?>
     </div>
 
 </div>
