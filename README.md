@@ -12,7 +12,7 @@ Pagina Web para compañia Move&amp;GoPR.
 - Gustavo Pagán Estronza
 - Esteban Echevarria Perez
 - Alejandro Irizarry Irizarry
-- Juan Perez Lugo
+- Christian Valls Lespier
 - Jaime A. Muñoz Rodriguez
 
 
