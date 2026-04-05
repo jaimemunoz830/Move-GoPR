@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 04, 2026 at 05:45 AM
+-- Generation Time: Apr 05, 2026 at 02:30 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -241,7 +241,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at`) VALUES
-(1, 'Jaime Muñoz', 'jaime@movegopr.com', '$2y$10$fZBsbnKmb4xawR9sWP6Cmu7QAwckIi7sotblbfJd8or9oKutzx0bG', 'admin', '2026-02-28 08:05:44');
+(1, 'Jaime Muñoz', 'jaime@movegopr.com', '$2y$10$fZBsbnKmb4xawR9sWP6Cmu7QAwckIi7sotblbfJd8or9oKutzx0bG', 'admin', '2026-02-28 08:05:44'),
+(2, 'testuser', 'test@movegopr.com', '$2y$10$4G9SWbzcmEDdd2ZUAIdHT.9YCN.jf2Sry1eRU/Sn0cA46kGGHWD9G', 'admin', '2026-04-04 23:44:25');
 
 --
 -- Indexes for dumped tables
@@ -345,7 +346,7 @@ ALTER TABLE `quote_requests`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables

@@ -26,7 +26,7 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
 <head>
     <meta charset="UTF-8">
     <title>Move-GoPR | Database Test Panel</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
     <style>
         .test-container { padding: 40px; max-width: 1200px; margin: auto; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }

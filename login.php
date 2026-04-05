@@ -1,4 +1,12 @@
 <?php
+/**
+ * login.php
+ * Pagina para iniciar sesion. Verifica el email y contraseña contra la base de datos, y establece la sesion del usuario.
+ * Si el inicio de sesion es exitoso, redirige a dashboard.php. Si no, muestra un mensaje de error.
+ * 
+ * @autor Jaime A. Muñoz Rodriguez
+ * @version 1.0
+ */
 include 'header.php';
 
 $error = "";
@@ -16,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
              $_SESSION['user_id'] = $user['id'];
              $_SESSION['user_name'] = $user['name'];
              $_SESSION['role'] = $user['role'];
-             header("Location: index.php");
+             header("Location: dashboard.php");
              exit();
         } else {
             $error = "Email o contraseña incorrectos.";
@@ -50,11 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <button type="submit" class="btn blue" style="width: 100%; border: none; cursor: pointer;">Entrar</button>
         </form>
+
+        <p style="text-align: center; margin-top: 15px; font-size: 13px; color: #666;">
+            ¿No tienes cuenta? <a href="register.php" style="color: #1e3a8a; font-weight: bold;">Regístrate</a>
+        </p>
     </div>
 </main>
 
 <?php include 'footer.php'; ?>
-
-
-
-
