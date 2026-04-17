@@ -1,11 +1,3 @@
-/* ====== BRAND COLORS ====== */
-:root {
-  --color-principal: #3B6E1A;
-  --color-secundario: #4E8F22;
-  --color-acento: #22C55E;
-  --color-texto: #1a1a1a;
-}
-
 /* ===== GLOBAL ===== */
 body {
     font-family: 'Poppins', sans-serif;
@@ -118,7 +110,7 @@ body {
     color: #4E8F22;
 }
 
-/* ===== ABOUT US ===== */
+/* ===== About Us ===== */
 .sobre-nosotros {
     padding: 80px 0;
     background: #fff;
@@ -153,6 +145,7 @@ body {
     padding: 60px calc((100% - 1100px) / 2 + 40px);
 }
 
+/* Imagen */
 .about-img {
     flex: 0 0 420px;
     border-radius: 16px;
@@ -167,6 +160,7 @@ body {
     display: block;
 }
 
+/* Texto */
 .about-text {
     flex: 1;
 }
@@ -246,6 +240,7 @@ body {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
+/* Contenedor de la foto */
 .about-img .realtor-photo-container {
     width: 150px;
     height: 150px;
@@ -263,6 +258,7 @@ body {
     border-color: #3B6E1A;
 }
 
+/* Indicador de clickeable */
 .about-img .realtor-photo-container::after {
     content: '\f002';
     font-family: 'Font Awesome 6 Free';
@@ -288,6 +284,7 @@ body {
     opacity: 1;
 }
 
+/* Foto */
 .about-img .realtor-photo {
     width: 100%;
     height: 100%;
@@ -296,6 +293,7 @@ body {
     pointer-events: none;
 }
 
+/* Nombre */
 .about-img .realtor-name {
     font-size: 1.6rem;
     margin: 15px 0 5px;
@@ -303,6 +301,7 @@ body {
     font-weight: 800;
 }
 
+/* Título */
 .about-img .realtor-title {
     font-size: 1rem;
     color: #4E8F22;
@@ -310,6 +309,7 @@ body {
     font-weight: 600;
 }
 
+/* Contacto */
 .about-img .realtor-contact {
     font-size: 0.95rem;
     color: #555;
@@ -325,6 +325,7 @@ body {
     width: 20px;
 }
 
+/* Botones */
 .about-img .realtor-buttons {
     margin-top: 20px;
     display: flex;
@@ -362,6 +363,105 @@ body {
     background: #0056b3;
 }
 
+/* Responsive */
+@media (max-width: 992px) {
+    .about-row,
+    .about-row.reverse {
+        flex-direction: column;
+        padding: 40px 24px;
+        gap: 30px;
+    }
+
+    .about-img {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 500px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .about-row.bg-tinted {
+        padding: 40px 24px;
+    }
+    
+    .about-img .realtor-card {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-img .realtor-card {
+        padding: 25px 20px;
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    .about-img .realtor-photo-container {
+        width: 130px;
+        height: 130px;
+    }
+    
+    .about-img .realtor-name {
+        font-size: 1.4rem;
+    }
+    
+    .about-img .realtor-title {
+        font-size: 0.9rem;
+    }
+    
+    .about-img .realtor-contact {
+        font-size: 0.85rem;
+    }
+    
+    .about-img .realtor-buttons .btn {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-img .realtor-card {
+        padding: 20px 15px;
+        max-width: 300px;
+    }
+    
+    .about-img .realtor-photo-container {
+        width: 110px;
+        height: 110px;
+        margin-bottom: 15px;
+    }
+    
+    .about-img .realtor-name {
+        font-size: 1.3rem;
+    }
+    
+    .about-img .realtor-title {
+        font-size: 0.85rem;
+    }
+    
+    .about-img .realtor-contact {
+        font-size: 0.8rem;
+    }
+    
+    .about-img .realtor-buttons {
+        gap: 8px;
+    }
+    
+    .about-img .realtor-buttons .btn {
+        padding: 6px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .about-img .realtor-photo-container::after {
+        width: 26px;
+        height: 26px;
+        font-size: 11px;
+        bottom: 6px;
+        right: 6px;
+    }
+}
+
 /* ===== FOOTER ===== */
 .footer {
     background: #1c1f23;
@@ -390,10 +490,21 @@ body {
     transform: translateY(-3px);
 }
 
-.whatsapp-footer { background: #25D366; }
-.whatsapp-footer:hover { background: #1da851; }
-.facebook-footer { background: #1877F2; }
-.instagram-footer { background: #E4405F; }
+.whatsapp-footer {
+    background: #25D366;
+}
+
+.whatsapp-footer:hover {
+    background: #1da851;
+}
+
+.facebook-footer {
+    background: #1877F2;
+}
+
+.instagram-footer {
+    background: #E4405F;
+}
 
 /* ===== BOTONES FLOTANTES ===== */
 .floating-buttons {
@@ -425,261 +536,298 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }
 
-.floating-btn.whatsapp  { background-color: #25D366; }
-.floating-btn.call      { background-color: #4E8F22; }
-.floating-btn.mail      { background-color: #0d6efd; }
-.floating-btn.facebook  { background-color: #1877F2; }
-.floating-btn.instagram { background-color: #E4405F; }
+.floating-btn.whatsapp {
+    background-color: #25D366;
+}
 
-/* ===== COMPARACION ===== */
+.floating-btn.call {
+    background-color: #4E8F22;
+}
+
+.floating-btn.mail {
+    background-color: #0d6efd;
+}
+
+
+
+
+/* Contenedor general */
 .comparacion {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 40px 0;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 40px 0;
 }
 
+/* Cada tarjeta */
 .comparacion-item {
-    width: 320px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    overflow: hidden;
-    text-align: center;
-    font-family: Arial, sans-serif;
+  width: 320px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
 
+/* Título del servicio */
 .comparacion-item h3 {
-    background: #222;
-    color: white;
-    padding: 12px;
-    margin: 0;
-    font-size: 1.2rem;
+  background: #222;
+  color: white;
+  padding: 12px;
+  margin: 0;
+  font-size: 1.2rem;
 }
 
+/* Contenedor de imágenes */
 .comparacion-fotos {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Etiquetas Antes / Después */
 .etiqueta {
-    font-weight: bold;
-    padding: 6px 0;
-    color: white;
-    font-size: 0.9rem;
+  font-weight: bold;
+  padding: 6px 0;
+  color: white;
+  font-size: 0.9rem;
 }
 
-.antes   { background: #d9534f; }
-.despues { background: #5cb85c; }
-
-/* ===== CAROUSEL ===== */
-.carousel-item {
-    padding: 30px 0;
+.antes {
+  background: #d9534f; /* rojo */
 }
 
+.despues {
+  background: #5cb85c; /* verde */
+}
+
+
+
+
+/*Ejemplo*/
+/* ====== COLORES DE LA MARCA ====== */
+:root {
+  --color-principal: #3B6E1A;   /* Verde Move & Go PR */
+  --color-secundario: #4E8F22;  /* Verde oscuro */
+  --color-acento: #22C55E;      /* Verde brillante */
+  --color-texto: #1a1a1a;
+}
+
+/* ====== TITULO DEL SERVICIO ====== */
 .carousel-item h3 {
-    font-weight: 700;
-    color: var(--color-secundario);
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--color-secundario);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
+/* ====== IMÁGENES ====== */
 .carousel-item img {
-    width: 100%;
-    height: 380px;
-    object-fit: cover;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    transition: transform .3s ease;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transition: transform .3s ease;
 }
 
 .carousel-item img:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
+/* ====== ETIQUETAS ANTES / DESPUÉS ====== */
 .carousel-item p {
-    font-size: 1.1rem;
-    font-weight: 100;
-    margin-top: 8px;
+  font-size: 1.1rem;
+  font-weight: 100;
+  margin-top: 8px;
 }
 
+.text-danger {
+  color: #C53030 !important; /* Rojo elegante */
+}
+
+.text-success {
+  color: var(--color-principal) !important;
+}
+
+/* ====== CONTROLES DEL CARRUSEL ====== */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-    filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg);
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg);
 }
 
 .carousel-control-prev,
 .carousel-control-next {
-    width: 5%;
+  width: 5%;
 }
 
 .carousel-control-prev:hover,
 .carousel-control-next:hover {
-    background-color: rgba(0,0,0,0.15);
-    border-radius: 50%;
+  background-color: rgba(0,0,0,0.15);
+  border-radius: 50%;
 }
 
+/* ====== ESPACIADO GENERAL ====== */
+.carousel-item {
+  padding: 30px 0;
+}
+/* Estilo profesional tipo "hero image" */
+.carousel-item img {
+  width: 100%;
+  height: 380px; /* Ajusta según tu diseño */
+  object-fit: cover; /* Recorte elegante sin deformar */
+  border-radius: 14px; /* Igual que la guagua */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15); /* Sombra suave profesional */
+}
 @media (max-width: 768px) {
-    .carousel-item img { height: 250px; }
+  .carousel-item img {
+    height: 250px;
+  }
 }
 
-/* ===== LIGHTBOX ===== */
+/* Fondo oscuro del lightbox */
 #lightbox {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.85);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
+/* Imagen ampliada */
 #lightbox img {
-    max-width: 90%;
-    max-height: 90%;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-    animation: fadeIn .3s ease;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  animation: fadeIn .3s ease;
 }
 
+/* Animación suave */
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to   { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-/* ===== BUTTONS ===== */
+/* Botón verde corporativo */
 .btn-success {
-    background-color: #4E8F22 !important;
-    border-color: #3B6E1A !important;
-    color: white !important;
-    font-weight: 600;
-    padding: 12px 28px;
-    border-radius: 10px;
-    transition: all .3s ease;
+  background-color: #4E8F22 !important;   /* Verde principal */
+  border-color: #3B6E1A !important;
+  color: white !important;
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 10px;
+  transition: all .3s ease;
 }
 
+/* Hover más oscuro y elegante */
 .btn-success:hover {
-    background-color: #3B6E1A !important;
-    border-color: #4E8F22 !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  background-color: #3B6E1A !important;   /* Verde oscuro */
+  border-color: #4E8F22 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
 }
 
 .btn-volver {
-    background-color: transparent;
-    border: 2px solid #4E8F22;
-    color: #3B6E1A;
-    font-weight: 600;
-    padding: 10px 22px;
-    border-radius: 10px;
-    transition: all .3s ease;
+  background-color: transparent;
+  border: 2px solid #4E8F22; /* Verde corporativo */
+  color: #3B6E1A;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 10px;
+  transition: all .3s ease;
 }
 
 .btn-volver:hover {
-    background-color: #4E8F22;
+  background-color: #4E8F22;
+  color: white;
+  transform: translateY(-2px);
+}
+
+
+/* ===== MODAL COTIZACION PRO (UPGRADE) ===== */
+
+/* Contenedor del Modal */
+.modal-form {
+    display: none; 
+    position: fixed; 
+    inset: 0; 
+    background: rgba(0,0,0,0.4); /* Fondo oscurecido suave */
+    backdrop-filter: blur(2px);
+    justify-content: center; 
+    align-items: center; 
+    z-index: 9999;
+}
+
+/* La tarjeta blanca (Form Box) */
+.form-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 20px; /* Bordes muy redondeados como la imagen */
+    width: 90%;
+    max-width: 550px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); /* Sombra suave */
+}
+
+.form-title {
+    text-align: center;
+    font-weight: 700;
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 25px;
+}
+
+/* Estilo de los Inputs */
+.custom-input, .custom-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #495057;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.custom-input:focus, .custom-textarea:focus {
+    border-color: #4E8F22;
+}
+
+.custom-textarea {
+    height: 120px;
+    resize: none;
+}
+
+/* Botón de WhatsApp Largo */
+.btn-send-whatsapp {
+    width: 100%;
+    background-color: #4E8F22; /* El verde de Move & Go */
     color: white;
-    transform: translateY(-2px);
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
 }
 
-.text-danger  { color: #C53030 !important; }
-.text-success { color: var(--color-principal) !important; }
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 992px) {
-    .about-row,
-    .about-row.reverse {
-        flex-direction: column;
-        padding: 40px 24px;
-        gap: 30px;
-    }
-
-    .about-img {
-        flex: 0 0 auto;
-        width: 100%;
-        max-width: 500px;
-        display: flex;
-        justify-content: center;
-    }
-
-    .about-row.bg-tinted {
-        padding: 40px 24px;
-    }
-
-    .about-img .realtor-card {
-        width: 100%;
-        max-width: 400px;
-    }
+.btn-send-whatsapp:hover {
+    background-color: #3d701a;
 }
 
-@media (max-width: 768px) {
-    .about-row,
-    .about-row.reverse {
-        flex-direction: column;
-        padding: 40px 24px;
-    }
-
-    .about-img {
-        flex: 0 0 220px;
-        width: 100%;
-    }
-
-    .about-row.bg-tinted {
-        padding: 40px 24px;
-    }
-
-    .about-img .realtor-card {
-        padding: 25px 20px;
-        width: 100%;
-        max-width: 350px;
-    }
-
-    .about-img .realtor-photo-container {
-        width: 130px;
-        height: 130px;
-    }
-
-    .about-img .realtor-name    { font-size: 1.4rem; }
-    .about-img .realtor-title   { font-size: 0.9rem; }
-    .about-img .realtor-contact { font-size: 0.85rem; }
-
-    .about-img .realtor-buttons .btn {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .about-img .realtor-card {
-        padding: 20px 15px;
-        max-width: 300px;
-    }
-
-    .about-img .realtor-photo-container {
-        width: 110px;
-        height: 110px;
-        margin-bottom: 15px;
-    }
-
-    .about-img .realtor-name    { font-size: 1.3rem; }
-    .about-img .realtor-title   { font-size: 0.85rem; }
-    .about-img .realtor-contact { font-size: 0.8rem; }
-
-    .about-img .realtor-buttons { gap: 8px; }
-
-    .about-img .realtor-buttons .btn {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-    }
-
-    .about-img .realtor-photo-container::after {
-        width: 26px;
-        height: 26px;
-        font-size: 11px;
-        bottom: 6px;
-        right: 6px;
-    }
+/* Botón cerrar (X) */
+.close-form {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 30px;
+    color: #aaa;
+    cursor: pointer;
 }
