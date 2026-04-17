@@ -147,9 +147,9 @@
       </div>
     </div>
 
-    <!-- SLIDE 2: Limpieza Profunda -->
+    <!-- SLIDE 2: Limpieza areas verdes -->
     <div class="carousel-item">
-      <h3 class="text-center mb-4">Limpieza Profunda</h3>
+      <h3 class="text-center mb-4">Limpieza Areas Verde</h3>
       <div class="row justify-content-center">
 
         <div class="col-md-5 text-center">
@@ -166,9 +166,9 @@
     </div>
 
 
-    <!-- SLIDE 3: Limpieza de Areas Verdes -->
+    <!-- SLIDE 3: Limpieza Profunda -->
     <div class="carousel-item">
-      <h3 class="text-center mb-4">Limpieza Areas Verdes</h3>
+      <h3 class="text-center mb-4">Limpieza Profunda</h3>
       <div class="row justify-content-center">
 
         <div class="col-md-5 text-center">
@@ -180,6 +180,12 @@
           <img src="../img/Limpieza-Areas-Verdes-despuess.jpeg" class="img-fluid rounded shadow lightbox-img">
           <p class="fw-bold mt-2 text-success">DESPUÉS</p>
         </div>
+
+        <div class="col-md-5 text-center">
+          <img src="../img/Limpieza-Escombros1.jpeg" class="img-fluid rounded shadow lightbox-img">
+          <p class="fw-bold mt-2 text-success"></p>
+        </div>
+
 
       </div>
     </div>
@@ -239,6 +245,25 @@
     </div>
 
 
+     <!-- SLIDE 6: Limpieza de Alfrombra -->
+    <div class="carousel-item">
+      <h3 class="text-center mb-4">Limpieza de Techo a Maquina de Presion</h3>
+      <div class="row justify-content-center">
+
+        <div class="col-md-5 text-center">
+          <img src="../img/Limpieza-Techo-antes.jpeg" class="img-fluid rounded shadow lightbox-img">
+          <p class="fw-bold mt-2 text-danger">ANTES</p>
+        </div>
+
+        <div class="col-md-5 text-center">
+          <img src="../img/Limpieza-Techo-despues.png" class="img-fluid rounded shadow lightbox-img">
+          <p class="fw-bold mt-2 text-success">DESPUÉS</p>
+        </div>
+
+      </div>
+    </div>
+
+
   </div>
 
   <!-- Controles -->
@@ -251,14 +276,37 @@
   </button>
 </div>
 
-
-
             <div class="text-center mt-5">
     <h4 class="mb-3">¿Necesitas este servicio?</h4>
-    <a href="../servicios/cotizacion.html" class="btn btn-success btn-lg">
-        Solicitar Cotización
-    </a>
+   <button class="btn-cotizar" onclick="abrirForm()">Solicitar Cotización</button>
 </div>
+
+<!-- FORMULARIO DE COTIZACIÓN -->
+<div id="modalForm" class="modal-form">
+  <div class="form-box">
+    <span onclick="cerrarForm()" class="close-form">×</span>
+    <h2 class="form-title">Solicita tu Cotización</h2>
+    
+    <div class="form-body">
+        <input type="text" id="nombre" placeholder="Nombre Completo" class="custom-input">
+        <input type="tel" id="telefono" placeholder="Teléfono" class="custom-input">
+        <input type="email" id="email" placeholder="Email" class="custom-input">
+        
+        <select id="servicio" class="custom-input">
+            <option value="" disabled selected>Tipo de servicio</option>
+            </select>
+
+        <input type="text" id="ubicacion" placeholder="Ubicación (ej: Bayamón → San Juan)" class="custom-input">
+        
+        <textarea id="mensaje" placeholder="Describe lo que necesitas" class="custom-textarea"></textarea>
+        
+        <button onclick="enviarWhatsApp()" class="btn-send-whatsapp">
+            Enviar por WhatsApp
+        </button>
+    </div>
+  </div>
+</div>
+
 
         </div>
     </div>
@@ -391,6 +439,86 @@ function mostrarAntes(id) {
 function mostrarDespues(id) {
     document.getElementById(`img${id}-despues`).classList.add("active");
     document.getElementById(`img${id}-antes`).classList.remove("active");
+}
+</script>
+
+
+<script>
+// SERVICIOS DE ESTA PÁGINA (MANTENIMIENTO)
+const serviciosMantenimiento = [
+    "Pintura",
+    "Limpieza",
+    "Áreas Verdes",
+    "Reparaciones",
+    "Propiedades",
+    "Pre/Post Mudanza",
+    "Limpieza de Aire Acondicionado",
+    "Limpieza a Máquina de Presión",
+    "Lavado de Alfombra",
+    "Lavado de Piso con Scrubber",
+    "Remoción de Escombros",
+    "Instalaciones Básicas"
+];
+
+// ABRIR FORM
+function abrirForm() {
+    document.getElementById("modalForm").style.display = "flex";
+    cargarServicios();
+}
+
+// CERRAR FORM
+function cerrarForm() {
+    document.getElementById("modalForm").style.display = "none";
+}
+
+// CARGAR SERVICIOS
+function cargarServicios() {
+    const select = document.getElementById("servicio");
+    select.innerHTML = '<option value="">Selecciona un servicio</option>';
+
+    serviciosMantenimiento.forEach(servicio => {
+        let option = document.createElement("option");
+        option.value = servicio;
+        option.textContent = servicio;
+        select.appendChild(option);
+    });
+}
+
+// ENVIAR POR WHATSAPP
+function enviarWhatsApp() {
+    let nombre = document.getElementById("nombre").value;
+    let telefono = document.getElementById("telefono").value;
+    let servicio = document.getElementById("servicio").value;
+    let ubicacion = document.getElementById("ubicacion").value; // Nuevo campo
+    let mensaje = document.getElementById("mensaje").value;
+
+    if(!nombre || !telefono) {
+        alert("Por favor, llena los campos principales.");
+        return;
+    }
+
+    let texto = `*Nueva Cotización - Move & Go PR*%0A%0A` +
+                `*Nombre:* ${nombre}%0A` +
+                `*Teléfono:* ${telefono}%0A` +
+                `*Servicio:* ${servicio}%0A` +
+                `*Ubicación:* ${ubicacion}%0A` +
+                `*Detalle:* ${mensaje}`;
+
+    let url = "https://wa.me/17875438201?text=" + texto;
+    window.open(url, "_blank");
+}
+
+// ENVIAR POR EMAIL
+function enviarEmail() {
+    let nombre = document.getElementById("nombre").value;
+    let telefono = document.getElementById("telefono").value;
+    let servicio = document.getElementById("servicio").value;
+    let mensaje = document.getElementById("mensaje").value;
+
+    let asunto = "Solicitud de cotización Move & Go PR";
+    let cuerpo = `Nombre: ${nombre}\nTeléfono: ${telefono}\nServicio: ${servicio}\nDetalle: ${mensaje}`;
+
+    window.location.href = `mailto:moveandgo24@gmail.com?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
 }
 </script>
 
