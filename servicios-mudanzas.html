@@ -99,18 +99,79 @@
             </div>
 
         </div>
-    </div>
+    </div>   
 </section>
+ <div id="serviciosCarousel" class="carousel slide mt-5 py-5" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <h2 class="fw-bold mb-5">Servicios que hemos realizado</h2>
+
+                <div class="carousel-item active">
+                    <h3 class="text-center mb-4">Mudanza Residencial</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <img src="../img/Mudanza1.jpeg" class="img-fluid rounded shadow lightbox-img" alt="Trabajo 1">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <h3 class="text-center mb-4">Protección de Muebles</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <img src="../img/Mudanza2.jpeg" class="img-fluid rounded shadow lightbox-img" alt="Trabajo 2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <h3 class="text-center mb-4">Carga Segura</h3>
+                    <div class="row justify-content-center">
+                        <div class="col-md-6 text-center">
+                            <img src="../img/Mudanza3.jpeg" class="img-fluid rounded shadow lightbox-img" alt="Trabajo 3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#serviciosCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#serviciosCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
 
         <div class="text-center mt-5">
-            <h4 class="mb-3">¿Necesitas este servicio?</h4>
-            <a href="../servicios/cotizacion.html" class="btn btn-success btn-lg">
-                Solicitar Cotización
-            </a>
+            <h4 class="mb-3">¿Necesitas realizar una mudanza?</h4>
+            <button class="btn-cotizar" onclick="abrirForm()">Solicitar Cotización</button>
         </div>
     </div>
 </section>
 
+<div id="modalForm" class="modal-form">
+  <div class="form-box">
+    <span onclick="cerrarForm()" class="close-form">×</span>
+    <h2 class="form-title">Solicita tu Cotización</h2>
+    
+    <div class="form-body">
+        <input type="text" id="nombre" placeholder="Nombre Completo" class="custom-input">
+        <input type="tel" id="telefono" placeholder="Teléfono" class="custom-input">
+        <input type="email" id="email" placeholder="Email" class="custom-input">
+        
+        <select id="servicio" class="custom-input">
+            <option value="" disabled selected>Tipo de servicio</option>
+            </select>
+
+        <input type="text" id="ubicacion" placeholder="Ubicación (ej: Bayamón → San Juan)" class="custom-input">
+        
+        <textarea id="mensaje" placeholder="Describe lo que necesitas" class="custom-textarea"></textarea>
+        
+        <button onclick="enviarWhatsApp()" class="btn-send-whatsapp">
+            Enviar por WhatsApp
+        </button>
+    </div>
+  </div>
+</div>
 
 
 <div class="text-center mb-5">
@@ -159,6 +220,7 @@
     </div>
 </footer>
 
+<!-- BOTONES FLOTANTES -->
 <div class="floating-buttons">
     <a href="https://wa.me/17875438201" class="floating-btn whatsapp" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
@@ -173,6 +235,91 @@
     </a>
 </div>
 
+<!-- BOOTSTRAP -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+
+<!-- SCRIPTS DE FORMULARIO + LIGHTBOX -->
+<script>
+// SERVICIOS ESPECÍFICOS DE MUDANZA
+const serviciosMudanza = [
+    "Mudanza Residencial",
+    "Mudanza Comercial",
+    "Embalaje y Protección",
+    "Carga y Descarga",
+    "Transporte de Muebles",
+    "Movimiento Interno"
+];
+
+function abrirForm() {
+    document.getElementById("modalForm").style.display = "flex";
+    cargarServicios();
+}
+
+function cerrarForm() {
+    document.getElementById("modalForm").style.display = "none";
+}
+
+function cargarServicios() {
+    const select = document.getElementById("servicio");
+    select.innerHTML = '<option value="">Selecciona un servicio</option>';
+    serviciosMudanza.forEach(s => {
+        let op = document.createElement("option");
+        op.value = s; 
+        op.textContent = s;
+        select.appendChild(op);
+    });
+}
+
+function enviarWhatsApp() {
+    let nombre = document.getElementById("nombre").value;
+    let telefono = document.getElementById("telefono").value;
+    let servicio = document.getElementById("servicio").value;
+    let ubicacion = document.getElementById("ubicacion").value; // Nuevo campo
+    let mensaje = document.getElementById("mensaje").value;
+
+    if(!nombre || !telefono) {
+        alert("Por favor, llena los campos principales.");
+        return;
+    }
+
+    let texto = `*Nueva Cotización - Move & Go PR*%0A%0A` +
+                `*Nombre:* ${nombre}%0A` +
+                `*Teléfono:* ${telefono}%0A` +
+                `*Servicio:* ${servicio}%0A` +
+                `*Ubicación:* ${ubicacion}%0A` +
+                `*Detalle:* ${mensaje}`;
+
+    let url = "https://wa.me/17875438201?text=" + texto;
+    window.open(url, "_blank");
+}
+
+function enviarEmail() {
+    let n = document.getElementById("nombre").value;
+    let t = document.getElementById("telefono").value;
+    let s = document.getElementById("servicio").value;
+    let m = document.getElementById("mensaje").value;
+
+    let body = `Nombre: ${n}\nTeléfono: ${t}\nServicio: ${s}\nDetalle: ${m}`;
+    window.location.href = `mailto:moveandgo24@gmail.com?subject=Cotizacion Mudanza&body=${encodeURIComponent(body)}`;
+}
+
+// LIGHTBOX
+document.addEventListener("DOMContentLoaded", function() {
+    const lb = document.createElement("div");
+    lb.id = "lightbox";
+    lb.style.cssText = "display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:10000; cursor:pointer;";
+    document.body.appendChild(lb);
+
+    document.querySelectorAll(".lightbox-img").forEach(img => {
+        img.addEventListener("click", () => {
+            lb.innerHTML = `<img src="${img.src}" style="max-width:90%; max-height:90%; border-radius:10px; box-shadow:0 0 20px rgba(255,255,255,0.2);">`;
+            lb.style.display = "flex";
+        });
+    });
+
+    lb.addEventListener("click", () => lb.style.display = "none");
+});
+</script>
+
+
+
