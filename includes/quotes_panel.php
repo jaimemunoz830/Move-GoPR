@@ -291,8 +291,8 @@ function tipo_badge($tipo) {
                     <tbody>
                         <?php foreach ($quotes as $q): ?>
                         <tr onclick="window.location='dashboard.php?section=quotes&action=view&id=<?= $q['id'] ?>&filter=<?= urlencode($filter) ?>'">
-                            <td style="color:#94a3b8;"><?= $q['id'] ?></td>
-                            <td>
+                            <td data-label="" style="color:#94a3b8;"><?= $q['id'] ?></td>
+                            <td data-label="Cliente">
                                 <?= tipo_badge($q['tipo_servicio']) ?>
                                 <strong style="display:block; margin-top:5px;"><?= htmlspecialchars($q['nombre']) ?></strong>
                                 <span style="display:block; color:#1e3a8a; font-size:13px; white-space:nowrap;">
@@ -304,13 +304,13 @@ function tipo_badge($tipo) {
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td style="white-space:nowrap;"><?= htmlspecialchars($q['servicio'] ?: '—') ?></td>
-                            <td style="white-space:nowrap; color:#555;"><?= htmlspecialchars($q['ubicacion'] ?: '—') ?></td>
-                            <td class="mensaje-cell"><?= htmlspecialchars(mb_strimwidth($q['mensaje'] ?: '—', 0, 50, '…')) ?></td>
-                            <td style="white-space:nowrap; color:#888; font-size:13px;">
+                            <td data-label="Servicio" style="white-space:nowrap;"><?= htmlspecialchars($q['servicio'] ?: '—') ?></td>
+                            <td data-label="Ubicación" style="white-space:nowrap; color:#555;"><?= htmlspecialchars($q['ubicacion'] ?: '—') ?></td>
+                            <td data-label="Mensaje" class="mensaje-cell"><?= htmlspecialchars(mb_strimwidth($q['mensaje'] ?: '—', 0, 35, '…')) ?></td>
+                            <td data-label="Fecha" style="white-space:nowrap; color:#888; font-size:13px;">
                                 <?= date('d/m/Y g:ia', strtotime($q['created_at'])) ?>
                             </td>
-                            <td><?= quote_status_badge($q['status']) ?></td>
+                            <td data-label="Estado"><?= quote_status_badge($q['status']) ?></td>
                         </tr>
                         <?php endforeach; ?>
                     </tbody>

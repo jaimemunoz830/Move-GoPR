@@ -300,18 +300,18 @@ function status_badge($status) {
     .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
     .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
-    .prop-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-    .prop-table th {
+    .propiedades-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .propiedades-table th {
         background: #f4f6f9;
         padding: 11px 14px;
         text-align: left;
         border-bottom: 2px solid #ddd;
         white-space: nowrap;
     }
-    .prop-table td { padding: 11px 14px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    .prop-table tr:hover td { background: #f9fafb; }
+    .propiedades-table td { padding: 11px 14px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    .propiedades-table tr:hover td { background: #f9fafb; }
 
-    .prop-thumb {
+    .prop-foto {
         width: 60px;
         height: 45px;
         object-fit: cover;
@@ -432,7 +432,7 @@ if ($action === 'list'): ?>
             </p>
         <?php else: ?>
             <div style="overflow-x:auto;">
-                <table class="prop-table">
+                <table class="propiedades-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -450,29 +450,29 @@ if ($action === 'list'): ?>
                     <tbody>
                         <?php foreach ($properties as $p): ?>
                         <tr>
-                            <td style="color:#94a3b8;"><?= $p['id'] ?></td>
-                            <td>
+                            <td data-label="" style="color:#94a3b8;"><?= $p['id'] ?></td>
+                            <td data-label="Foto">
                                 <?php if ($p['image']): ?>
                                     <img src="<?= htmlspecialchars($p['image']) ?>"
                                          alt="foto"
-                                         class="prop-thumb">
+                                         class="prop-foto">
                                 <?php else: ?>
                                     <div class="no-thumb">Sin foto!</div>
                                 <?php endif; ?>
                             </td>
-                            <td><strong><?= htmlspecialchars($p['title']) ?></strong></td>
-                            <td style="text-transform:capitalize;"><?= htmlspecialchars($p['property_type']) ?></td>
-                            <td><?= $p['listing_type'] === 'sale' ? 'Venta' : 'Alquiler' ?></td>
-                            <td>$<?= number_format($p['price'], 2) ?></td> <!-- TODO: Añadir logica /mes a precio de renta -->
-                            <td><?= htmlspecialchars($p['municipality'] ?? '—') ?></td>
-                            <td><?= status_badge($p['status']) ?></td>
-                            <td style="text-align:center;">
+                            <td data-label="Título"><strong><?= htmlspecialchars($p['title']) ?></strong></td>
+                            <td data-label="Tipo" style="text-transform:capitalize;"><?= htmlspecialchars($p['property_type']) ?></td>
+                            <td data-label="Listado"><?= $p['listing_type'] === 'sale' ? 'Venta' : 'Alquiler' ?></td>
+                            <td data-label="Precio">$<?= number_format($p['price'], 2) ?></td> <!-- TODO: Añadir logica /mes a precio de renta -->
+                            <td data-label="Municipio"><?= htmlspecialchars($p['municipality'] ?? '—') ?></td>
+                            <td data-label="Estado"><?= status_badge($p['status']) ?></td>
+                            <td data-label="Destacado" style="text-align:center;">
                                 <?= $p['featured'] ? '⭐' : '—' ?>
                             </td>
-                            <td>
-                                <div style="display:flex; gap:6px; align-items:center;">
+                            <td data-label="Acciones">
+                                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
                                     <a href="dashboard.php?section=properties&action=edit&id=<?= $p['id'] ?>"
-                                       class="btn-edit">Editar</a> 
+                                       class="btn-edit">Editar</a>
 
                                     <form method="POST"
                                           onsubmit="return confirm('¿Eliminar «<?= htmlspecialchars(addslashes($p['title'])) ?>»? Esta acción no se puede deshacer.');">

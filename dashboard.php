@@ -71,6 +71,12 @@ if (!in_array($section, $allowed_sections)) {
 </head>
 <body>
 
+<header class="mobile-header">
+    <button class="hamburger-btn" id="sidebarToggle" aria-label="Abrir menú">&#9776;</button>
+    <span class="mobile-header-title">Admin Panel</span>
+</header>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
 <div class="admin-container">
 
     <div class="sidebar">
@@ -129,5 +135,18 @@ if (!in_array($section, $allowed_sections)) {
 
 </div>
 
+<script>
+    const toggle  = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    toggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('open');
+    });
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+    });
+</script>
 </body>
 </html>
