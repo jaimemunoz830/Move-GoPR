@@ -1,24 +1,7 @@
 <?php
-define('MOVE_GO_APP', true);   // required by db_queries.php security check
-require 'config.php';          // sets up $pdo (PDO connection)
-require_once 'db_queries.php'; // all DB functions live here
-
+require 'config.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
-$role = $_SESSION['role'] ?? 'viewer';
-
-// ── Fetch data from DB ───────────────────────────────────────
-$properties       = getProperties($pdo);          // all active properties + images
-$pinnedLocations  = getPinnedLocations($pdo);      // admin pinpoints with coords
-$allLocations     = getLocations($pdo);            // all locations (for popup dropdowns)
-$unpinnedLocations = getLocations($pdo, 'no');     // for "items without a pin"
-$pinnedList        = getLocations($pdo, 'yes');    // for "already pinned items"
-
-// Encode for JavaScript
-$propertiesJson  = json_encode($properties,      JSON_HEX_TAG | JSON_HEX_APOS);
-$locationsJson   = json_encode($allLocations,    JSON_HEX_TAG | JSON_HEX_APOS);
-$pinnedJson      = json_encode($pinnedLocations, JSON_HEX_TAG | JSON_HEX_APOS);
-$unpinnedJson    = json_encode($unpinnedLocations, JSON_HEX_TAG | JSON_HEX_APOS);
-$pinnedListJson  = json_encode($pinnedList,      JSON_HEX_TAG | JSON_HEX_APOS);
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'viewer';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,6 +15,7 @@ $pinnedListJson  = json_encode($pinnedList,      JSON_HEX_TAG | JSON_HEX_APOS);
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<!-- Project stylesheet -->
 <link rel="stylesheet" href="css/styles.css">
 
 <style>
@@ -332,7 +316,7 @@ body {
   color: #4E8F22;
 }
 
-/* Spec grid */
+/* Spec grid — same concept as props.html but brand-coloured */
 .dp-specs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -574,7 +558,7 @@ body {
   <label>Título</label>
   <input id="pinTitle" placeholder="Dejar en blanco para mantener el nombre">
   <label>Estado del item</label>
-  <select id="pinFilter" onchange="filterPinItems()">
+  <select id="pinFilter">
     <option value="no">Items sin pin</option>
     <option value="yes">Items ya pineados</option>
   </select>
@@ -592,35 +576,79 @@ body {
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   DATA — injected from PHP / DB (via db_queries.php)
-   Each property row has:
-     id, title, type, price, sqft, beds, bath, laundry, parking,
-     pets, mailbox, description, lat, lng, image, images[]
-   Each location row has:
-     id, name, lat, lng, pinpoint, direction, size, description
+   PROPERTY DATA (from original map.php)
 ══════════════════════════════════════════════════════════════ */
-const properties         = <?= $propertiesJson ?>;
-const pinnedLocations    = <?= $pinnedJson ?>;
-const unpinnedLocations  = <?= $unpinnedJson ?>;
-const pinnedListLocations = <?= $pinnedListJson ?>;
+const properties = [
+  {id:'p1', title:"Luxury Villa",       type:"sale", lat:18.3358, lng:-65.6520,
+   price:"$850,000",   sqft:"4,200 ft²", beds:"5 Cuartos", bath:"4 Baños",
+   laundry:"Cuarto dedicado", parking:"Garage Doble", pets:"Permitidas", mailbox:"Sí",
+   images:["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",
+           "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800"],
+   image:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+   desc:"Villa frente al mar con piscina privada y vista panorámica al océano."},
 
-// Normalise DB column names → JS-friendly aliases
-properties.forEach(p => {
-  p.desc   = p.description ?? '';   // map.php used 'desc'; DB column is 'description'
-  p.images = (p.images || []).map(img => img.image_url);
-});
+  {id:'p2', title:"Modern Family Home", type:"sale", lat:18.4655, lng:-66.1057,
+   price:"$450,000",   sqft:"2,800 ft²", beds:"4 Cuartos", bath:"3 Baños",
+   laundry:"Interna", parking:"2 Carros", pets:"Sí", mailbox:"Sí",
+   images:["https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=800",
+           "https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800"],
+   image:"https://images.unsplash.com/photo-1570129477492-45c003edd2be",
+   desc:"Hogar moderno y espacioso cerca del centro de la ciudad."},
 
-/* ══════════════════════════════════════════════════════════════
-   ROLE  (from PHP session)
-══════════════════════════════════════════════════════════════ */
-const role = <?= json_encode($role) ?>;
+  {id:'p3', title:"Cozy Apartment",     type:"rent", lat:18.2011, lng:-67.1396,
+   price:"$1,800/mes", sqft:"1,200 ft²", beds:"2 Cuartos", bath:"2 Baños",
+   laundry:"Comunal", parking:"1 Carro", pets:"No", mailbox:"Lobby",
+   images:["https://images.unsplash.com/photo-1507089947368-19c1da9775ae?w=800",
+           "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800"],
+   image:"https://images.unsplash.com/photo-1507089947368-19c1da9775ae",
+   desc:"Apartamento cómodo cerca de todas las amenidades."},
 
-/* ══════════════════════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════════════════════ */
+  {id:'p4', title:"Suburban House",     type:"rent", lat:18.3800, lng:-66.0600,
+   price:"$2,200/mes", sqft:"1,800 ft²", beds:"3 Cuartos", bath:"2 Baños",
+   laundry:"Interna", parking:"2 Carros", pets:"Sí", mailbox:"Sí",
+   images:["https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800",
+           "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"],
+   image:"https://images.unsplash.com/photo-1568605114967-8130f3a36994",
+   desc:"Casa familiar perfecta en vecindario tranquilo."},
+
+  {id:'p5', title:"Cozy Studio",        type:"rent", lat:18.4350, lng:-66.0550,
+   price:"$900/mes",   sqft:"550 ft²",   beds:"1 Cuarto",  bath:"1 Baño",
+   laundry:"Comunal", parking:"1 Carro", pets:"Gatos solamente", mailbox:"Sí",
+   images:["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800",
+           "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800"],
+   image:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267",
+   desc:"Estudio moderno y asequible, ideal para estudiantes."},
+
+  {id:'p6', title:"Oceanview Mansion",  type:"sale", lat:18.4800, lng:-66.0000,
+   price:"$1,200,000", sqft:"5,000 ft²", beds:"6 Cuartos", bath:"5 Baños",
+   laundry:"Cuarto dedicado", parking:"Garage Triple", pets:"Sí", mailbox:"Sí",
+   images:["https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800",
+           "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800"],
+   image:"https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6",
+   desc:"Mansión de lujo con piscina infinita y vistas al océano. Seguridad 24/7."}
+];
+
 let currentFilter = 'all';
-let propMarkers   = [];
-let pinMarkers    = [];
+let propMarkers   = [];   // property markers
+let pinMarkers    = [];   // admin pinpoint markers
+
+/* ══════════════════════════════════════════════════════════════
+   ROLE (from PHP session — falls back to localStorage for dev)
+══════════════════════════════════════════════════════════════ */
+const role = '<?php echo htmlspecialchars($role); ?>' || localStorage.getItem('role') || 'viewer';
+
+/* ══════════════════════════════════════════════════════════════
+   PINPOINT DB (localStorage)
+══════════════════════════════════════════════════════════════ */
+function getDB()   { return JSON.parse(localStorage.getItem('locations')) || []; }
+function saveDB(d) { localStorage.setItem('locations', JSON.stringify(d)); }
+
+if (!localStorage.getItem('locations')) {
+  saveDB([
+    { id:1, name:"Punto A", lat:18.25, lng:-67.1, pinpoint:"yes", images:[], dir:"Norte", sz:"Grande", dsc:"Descripción A" },
+    { id:2, name:"Punto B", lat:null,  lng:null,  pinpoint:"no",  images:[], dir:"",      sz:"",       dsc:"" }
+  ]);
+}
 
 /* ══════════════════════════════════════════════════════════════
    MAP INIT
@@ -698,7 +726,7 @@ document.getElementById('radiusSlider').oninput = function() {
 };
 
 /* ══════════════════════════════════════════════════════════════
-   PROPERTY MARKERS + CARDS
+   PROPERTY MARKERS + CARDS (original map.php logic)
 ══════════════════════════════════════════════════════════════ */
 function loadProperties() {
   propMarkers.forEach(m => map.removeLayer(m));
@@ -707,11 +735,10 @@ function loadProperties() {
   const list = document.getElementById('propertyList');
   list.innerHTML = '';
 
-  const filtered = properties.filter(p =>
-    currentFilter === 'all' || p.type === currentFilter
-  );
+  const filtered = properties.filter(p => currentFilter === 'all' || p.type === currentFilter);
 
   filtered.forEach(property => {
+    // Custom coloured icon: green = sale, blue = rent
     const iconColor = property.type === 'sale' ? '#4E8F22' : '#1e40af';
     const icon = L.divIcon({
       html: `<div style="background:${iconColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
@@ -728,7 +755,7 @@ function loadProperties() {
     marker.propData = property;
     propMarkers.push(marker);
 
-    // Card
+    // Card in the horizontal strip
     const card = document.createElement('div');
     card.className = 'propertyCard';
     card.innerHTML = `
@@ -754,11 +781,9 @@ function showDetails(property) {
     <span class="badge badge-${property.type}">${property.type === 'sale' ? 'Venta' : 'Alquiler'}</span>
     <h2>${property.title}</h2>
     <p><strong style="color:#4E8F22">${property.price}</strong></p>
-    <p>
-      <i class="fa-solid fa-ruler-combined" style="color:#4E8F22"></i> ${property.sqft} &nbsp;
-      <i class="fa-solid fa-bed"            style="color:#4E8F22"></i> ${property.beds} &nbsp;
-      <i class="fa-solid fa-bath"           style="color:#4E8F22"></i> ${property.bath}
-    </p>
+    <p><i class="fa-solid fa-ruler-combined" style="color:#4E8F22"></i> ${property.sqft} &nbsp;
+       <i class="fa-solid fa-bed" style="color:#4E8F22"></i> ${property.beds} &nbsp;
+       <i class="fa-solid fa-bath" style="color:#4E8F22"></i> ${property.bath}</p>
     <p style="font-size:0.82rem;color:#666;margin-top:6px">${property.desc}</p>
   `;
 }
@@ -771,7 +796,7 @@ function filterProperties(type, btn) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RADIUS SIDEBAR
+   RADIUS SIDEBAR — shows properties inside the circle
 ══════════════════════════════════════════════════════════════ */
 function updateRadiusSidebar() {
   const s = document.getElementById('sidebar');
@@ -804,8 +829,14 @@ function updateRadiusSidebar() {
         </div>
         <button class="btn-more-info">Más Info</button>
       `;
-      c.querySelector('.rc-top').onclick = () => { map.setView(m.getLatLng(), 13); showDetails(p); };
-      c.querySelector('.btn-more-info').onclick = e => { e.stopPropagation(); openDetailPanel(p); };
+      c.querySelector('.rc-top').onclick = () => {
+        map.setView(m.getLatLng(), 13);
+        showDetails(p);
+      };
+      c.querySelector('.btn-more-info').onclick = (e) => {
+        e.stopPropagation();
+        openDetailPanel(p);
+      };
     } else if (m.locData) {
       c.innerHTML = `
         <div class="rc-top">
@@ -820,26 +851,29 @@ function updateRadiusSidebar() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   DETAIL PANEL
+   DETAIL PANEL — expanded view below horizontal strip
 ══════════════════════════════════════════════════════════════ */
 let dpSlide = 0;
 
 function openDetailPanel(property) {
   dpSlide = 0;
-  const images = property.images && property.images.length ? property.images : [property.image];
+  const images = property.images || [property.image];
 
-  const imgSlides = images.map(src => `<img src="${src}" alt="${property.title}">`).join('');
+  const imgSlides = images.map(src =>
+    `<img src="${src}" alt="${property.title}">`
+  ).join('');
 
+  // Build spec items — only show fields the property actually has
   const specs = [
-    { label:'Tipo',     value: property.type === 'sale' ? 'Venta' : 'Alquiler', icon:'fa-tag' },
-    { label:'Precio',   value: property.price,   icon:'fa-dollar-sign' },
-    { label:'Tamaño',   value: property.sqft,    icon:'fa-ruler-combined' },
-    { label:'Cuartos',  value: property.beds,    icon:'fa-bed' },
-    { label:'Baños',    value: property.bath,    icon:'fa-bath' },
-    { label:'Laundry',  value: property.laundry, icon:'fa-soap' },
-    { label:'Parking',  value: property.parking, icon:'fa-car' },
-    { label:'Mascotas', value: property.pets,    icon:'fa-paw' },
-    { label:'Buzón',    value: property.mailbox, icon:'fa-mailbox' },
+    { label: 'Tipo',      value: property.type === 'sale' ? 'Venta' : 'Alquiler', icon: 'fa-tag' },
+    { label: 'Precio',    value: property.price,   icon: 'fa-dollar-sign' },
+    { label: 'Tamaño',    value: property.sqft,    icon: 'fa-ruler-combined' },
+    { label: 'Cuartos',   value: property.beds,    icon: 'fa-bed' },
+    { label: 'Baños',     value: property.bath,    icon: 'fa-bath' },
+    { label: 'Laundry',   value: property.laundry, icon: 'fa-soap' },
+    { label: 'Parking',   value: property.parking, icon: 'fa-car' },
+    { label: 'Mascotas',  value: property.pets,    icon: 'fa-paw' },
+    { label: 'Buzón',     value: property.mailbox, icon: 'fa-mailbox' },
   ].filter(s => s.value);
 
   const specsHtml = specs.map(s => `
@@ -864,7 +898,7 @@ function openDetailPanel(property) {
         <span class="badge badge-${property.type}" style="margin-bottom:6px;display:inline-block">
           ${property.type === 'sale' ? 'Venta' : 'Alquiler'}
         </span>
-        <h2>${property.title}</h2>
+        <h2>${property.title || property.address}</h2>
       </div>
       <div class="dp-price">${property.price}</div>
     </div>
@@ -878,7 +912,7 @@ function openDetailPanel(property) {
 
   const panel = document.getElementById('detailPanel');
   panel.style.display = 'block';
-  panel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function closeDetailPanel() {
@@ -896,38 +930,26 @@ function dpMove(dir) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   PINPOINT MARKERS  (loaded from DB via PHP, no localStorage)
+   ADMIN PINPOINTS (localStorage-based, from our map work)
 ══════════════════════════════════════════════════════════════ */
 function loadPinMarkers() {
   pinMarkers.forEach(m => map.removeLayer(m));
   pinMarkers = [];
 
-  pinnedLocations.forEach(loc => {
-    if (!loc.lat || !loc.lng) return;
+  getDB().forEach(loc => {
+    if (loc.pinpoint !== 'yes' || loc.lat == null) return;
 
-    const m = L.marker([parseFloat(loc.lat), parseFloat(loc.lng)]).addTo(map);
+    const m = L.marker([loc.lat, loc.lng]).addTo(map);
     m.locData = loc;
 
     if (role === 'admin' || role === 'owner') {
       m.on('click', function() {
         if (confirm(`¿Eliminar pinpoint "${loc.name}"?\n(El registro se conserva.)`)) {
-          // Call server-side AJAX endpoint to remove pin from DB
-          fetch('ajax/remove_pin.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: loc.id })
-          })
-          .then(r => r.json())
-          .then(res => {
-            if (res.success) {
-              // Remove from our local array and re-render
-              const idx = pinnedLocations.findIndex(l => l.id === loc.id);
-              if (idx > -1) pinnedLocations.splice(idx, 1);
-              loadPinMarkers();
-            } else {
-              alert('Error al eliminar el pin: ' + (res.error || 'desconocido'));
-            }
-          });
+          const db = getDB();
+          const item = db.find(i => i.id === loc.id);
+          if (item) { item.pinpoint = 'no'; item.lat = null; item.lng = null; saveDB(db); }
+          loadPinMarkers();
+          updateRadiusSidebar();
         }
       });
     }
@@ -939,7 +961,7 @@ function loadPinMarkers() {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   RIGHT-CLICK POPUP (admin/owner) — now writes to DB via AJAX
+   RIGHT-CLICK POPUP (admin/owner only)
 ══════════════════════════════════════════════════════════════ */
 let selectedLatLng = null;
 
@@ -951,7 +973,7 @@ document.getElementById('map').addEventListener('contextmenu', function(e) {
 });
 
 function openPopup() {
-  filterPinItems();   // populate dropdown based on current pinFilter value
+  loadPinItems();
   document.getElementById('popup').style.display   = 'block';
   document.getElementById('overlay').style.display = 'block';
 }
@@ -962,69 +984,40 @@ function closePopup() {
   selectedLatLng = null;
 }
 
-/**
- * Populate the #pinItems <select> based on whether the user
- * wants to see unpinned or already-pinned locations.
- * Data comes from the PHP-injected arrays — no extra round-trip needed.
- */
-function filterPinItems() {
+function loadPinItems() {
   const f   = document.getElementById('pinFilter').value;
   const sel = document.getElementById('pinItems');
   sel.innerHTML = '';
-
-  const source = f === 'no' ? unpinnedLocations : pinnedListLocations;
-
-  if (source.length === 0) {
+  const filtered = getDB().filter(i => i.pinpoint === f);
+  if (filtered.length === 0) {
     const o = document.createElement('option');
     o.text = '— sin items —'; o.disabled = true;
     sel.appendChild(o);
     return;
   }
-  source.forEach(loc => {
+  filtered.forEach(i => {
     const o = document.createElement('option');
-    o.value = loc.id;
-    o.text  = loc.name;
+    o.value = i.id; o.text = i.name;
     sel.appendChild(o);
   });
 }
+
+document.getElementById('pinFilter').onchange = loadPinItems;
 
 function createPin() {
   const id   = parseInt(document.getElementById('pinItems').value);
   const name = document.getElementById('pinTitle').value.trim();
   if (!id || !selectedLatLng) return;
-
-  fetch('ajax/set_pin.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      id,
-      lat:  selectedLatLng.lat,
-      lng:  selectedLatLng.lng,
-      name: name || null
-    })
-  })
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      // Add to pinnedLocations array so marker appears without full page reload
-      const newLoc = {
-        id,
-        name:     name || res.name,
-        lat:      selectedLatLng.lat,
-        lng:      selectedLatLng.lng,
-        pinpoint: 'yes'
-      };
-      pinnedLocations.push(newLoc);
-      // Remove from unpinned array
-      const idx = unpinnedLocations.findIndex(l => l.id === id);
-      if (idx > -1) unpinnedLocations.splice(idx, 1);
-
-      closePopup();
-      loadPinMarkers();
-    } else {
-      alert('Error al crear el pin: ' + (res.error || 'desconocido'));
-    }
-  });
+  const db   = getDB();
+  const item = db.find(i => i.id === id);
+  if (!item) return;
+  if (name) item.name = name;
+  item.lat = selectedLatLng.lat;
+  item.lng = selectedLatLng.lng;
+  item.pinpoint = 'yes';
+  saveDB(db);
+  closePopup();
+  loadPinMarkers();
 }
 
 /* ══════════════════════════════════════════════════════════════
