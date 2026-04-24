@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 05, 2026 at 02:30 AM
+-- Generation Time: Apr 24, 2026 at 07:49 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,21 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `move-gopr`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `jobs`
---
-
-CREATE TABLE `jobs` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `quote_id` bigint(20) UNSIGNED NOT NULL,
-  `scheduled_start` datetime NOT NULL,
-  `scheduled_end` datetime DEFAULT NULL,
-  `status` enum('scheduled','in_progress','completed','cancelled') NOT NULL DEFAULT 'scheduled',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -135,22 +120,6 @@ INSERT INTO `municipios` (`id`, `municipality`, `region`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `payments`
---
-
-CREATE TABLE `payments` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `job_id` bigint(20) UNSIGNED NOT NULL,
-  `amount` decimal(10,2) NOT NULL,
-  `method` enum('cash','card','ath_movil') NOT NULL,
-  `status` enum('pending','paid','failed','refunded') NOT NULL DEFAULT 'pending',
-  `paid_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `properties`
 --
 
@@ -187,39 +156,31 @@ INSERT INTO `properties` (`id`, `title`, `property_type`, `listing_type`, `price
 -- --------------------------------------------------------
 
 --
--- Table structure for table `quotes`
---
-
-CREATE TABLE `quotes` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `quote_request_id` bigint(20) UNSIGNED NOT NULL,
-  `base_price` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `distance_fee` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `add_on_fee` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `total` decimal(10,2) NOT NULL,
-  `status` enum('draft','sent','accepted','declined','expired') NOT NULL DEFAULT 'draft',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `quote_requests`
 --
 
 CREATE TABLE `quote_requests` (
-  `id` bigint(20) UNSIGNED NOT NULL,
-  `user_id` bigint(20) UNSIGNED NOT NULL,
-  `pickup_location_id` smallint(5) UNSIGNED NOT NULL,
-  `dropoff_location_id` smallint(5) UNSIGNED NOT NULL,
-  `move_date` date NOT NULL,
-  `property_type` enum('house','apartment','office') NOT NULL,
-  `floors` tinyint(3) UNSIGNED NOT NULL DEFAULT 1,
-  `has_elevator` tinyint(1) NOT NULL DEFAULT 0,
-  `notes` text DEFAULT NULL,
-  `status` enum('new','reviewing','quoted','accepted','rejected','cancelled') NOT NULL DEFAULT 'new',
+  `id` int(11) NOT NULL,
+  `tipo_servicio` varchar(20) NOT NULL DEFAULT '',
+  `nombre` varchar(100) NOT NULL DEFAULT '',
+  `telefono` varchar(20) NOT NULL DEFAULT '',
+  `email` varchar(100) NOT NULL DEFAULT '',
+  `servicio` varchar(100) NOT NULL DEFAULT '',
+  `ubicacion` varchar(200) NOT NULL DEFAULT '',
+  `mensaje` text DEFAULT NULL,
+  `status` varchar(20) NOT NULL DEFAULT 'new',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `quote_requests`
+--
+
+INSERT INTO `quote_requests` (`id`, `tipo_servicio`, `nombre`, `telefono`, `email`, `servicio`, `ubicacion`, `mensaje`, `status`, `created_at`) VALUES
+(1, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'new', '2026-04-24 04:17:22'),
+(2, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'closed', '2026-04-24 04:17:24'),
+(3, 'mudanza', 'cliente favorito', '787-123-4567', 'test@email.com', 'Transporte de Muebles', 'san juan a caguas', 'necesito mover 2 muebles que usamos para entrevistas', 'contacted', '2026-04-24 04:35:51'),
+(4, 'mudanza', 'Juan del Pueblo', '787-332-9940', 'test@mail.com', 'Carga y Descarga', 'Colombia a Puerto Rico', 'No preguntes mucho.', 'contacted', '2026-04-24 05:20:18');
 
 -- --------------------------------------------------------
 
@@ -249,25 +210,11 @@ INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at
 --
 
 --
--- Indexes for table `jobs`
---
-ALTER TABLE `jobs`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_jobs_quote` (`quote_id`);
-
---
 -- Indexes for table `municipios`
 --
 ALTER TABLE `municipios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uq_locations_municipality` (`municipality`);
-
---
--- Indexes for table `payments`
---
-ALTER TABLE `payments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_payments_job` (`job_id`);
 
 --
 -- Indexes for table `properties`
@@ -279,21 +226,10 @@ ALTER TABLE `properties`
   ADD KEY `fk_properties_municipio` (`municipio_id`);
 
 --
--- Indexes for table `quotes`
---
-ALTER TABLE `quotes`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uq_quotes_request` (`quote_request_id`);
-
---
 -- Indexes for table `quote_requests`
 --
 ALTER TABLE `quote_requests`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_qr_user` (`user_id`),
-  ADD KEY `idx_qr_status` (`status`),
-  ADD KEY `fk_qr_pickup` (`pickup_location_id`),
-  ADD KEY `fk_qr_dropoff` (`dropoff_location_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -307,22 +243,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `jobs`
---
-ALTER TABLE `jobs`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `municipios`
 --
 ALTER TABLE `municipios`
   MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
-
---
--- AUTO_INCREMENT for table `payments`
---
-ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `properties`
@@ -331,58 +255,26 @@ ALTER TABLE `properties`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT for table `quotes`
---
-ALTER TABLE `quotes`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `quote_requests`
 --
 ALTER TABLE `quote_requests`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `jobs`
---
-ALTER TABLE `jobs`
-  ADD CONSTRAINT `fk_jobs_quote` FOREIGN KEY (`quote_id`) REFERENCES `quotes` (`id`);
-
---
--- Constraints for table `payments`
---
-ALTER TABLE `payments`
-  ADD CONSTRAINT `fk_payments_job` FOREIGN KEY (`job_id`) REFERENCES `jobs` (`id`);
-
---
 -- Constraints for table `properties`
 --
 ALTER TABLE `properties`
   ADD CONSTRAINT `fk_properties_municipio` FOREIGN KEY (`municipio_id`) REFERENCES `municipios` (`id`);
-
---
--- Constraints for table `quotes`
---
-ALTER TABLE `quotes`
-  ADD CONSTRAINT `fk_quotes_request` FOREIGN KEY (`quote_request_id`) REFERENCES `quote_requests` (`id`);
-
---
--- Constraints for table `quote_requests`
---
-ALTER TABLE `quote_requests`
-  ADD CONSTRAINT `fk_qr_dropoff` FOREIGN KEY (`dropoff_location_id`) REFERENCES `municipios` (`id`),
-  ADD CONSTRAINT `fk_qr_pickup` FOREIGN KEY (`pickup_location_id`) REFERENCES `municipios` (`id`),
-  ADD CONSTRAINT `fk_qr_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
