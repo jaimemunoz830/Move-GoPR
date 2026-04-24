@@ -5,8 +5,8 @@
  * Called by map.php marker click handler via fetch POST.
  */
 define('MOVE_GO_APP', true);
-require '../config.php';
-require_once '../db_queries.php';
+require 'config.php';
+require_once 'db_queries.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 

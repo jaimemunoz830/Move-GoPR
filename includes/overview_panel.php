@@ -5,14 +5,13 @@
  * Panel de resumen general para el dashboard. Muestra estadísticas clave y accesos rápidos.   
  * 
  * @author     Jaime A. Muñoz Rodriguez
- * @version    1.0
+ * @version    1.1
  */
 $count_properties   = $pdo->query("SELECT COUNT(*) FROM properties")->fetchColumn();
 $count_available    = $pdo->query("SELECT COUNT(*) FROM properties WHERE status = 'available'")->fetchColumn();
 $count_users        = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
 $count_quotes       = $pdo->query("SELECT COUNT(*) FROM quote_requests")->fetchColumn();
 $count_pending      = $pdo->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn();
-$count_jobs         = $pdo->query("SELECT COUNT(*) FROM jobs")->fetchColumn();
 ?>
 
 <h1>Bienvenido, <?php echo htmlspecialchars($_SESSION['user_name']); ?></h1>
@@ -37,13 +36,6 @@ $count_jobs         = $pdo->query("SELECT COUNT(*) FROM jobs")->fetchColumn();
         <p style="font-size:2rem; font-weight:bold; color:#d97706; margin:0;"><?= $count_quotes ?></p>
         <small style="color:#888;"><?= $count_pending ?> nuevas</small>
     </div>
-
-    <div class="card" style="border-left:4px solid #7c3aed; cursor:default;">
-        <h3 style="color:#666; font-size:13px; text-transform:uppercase; margin:0 0 8px;">Trabajos</h3>
-        <p style="font-size:2rem; font-weight:bold; color:#7c3aed; margin:0;"><?= $count_jobs ?></p>
-        <small style="color:#888;">programados</small>
-    </div>
-
 </div>
 
 <div class="card" style="cursor:default;">

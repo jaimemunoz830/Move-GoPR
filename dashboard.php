@@ -7,7 +7,7 @@
  * 
  * @author     Christian
  * @author     Jaime A. Muñoz Rodriguez
- * @version    1.0
+ * @version    1.2
  */
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -74,31 +74,38 @@ if (!in_array($section, $allowed_sections)) {
 <div class="admin-container">
 
     <div class="sidebar">
-        <h2>Admin Panel</h2>
+        <div class="sidebar-nav">
+            <h2>Admin Panel</h2>
 
-        <p class="nav-section-label">General</p>
-        <a href="dashboard.php?section=overview"
-           class="<?php echo $section === 'overview' ? 'active' : '' ?>">
-            Dashboard
-        </a>
+            <p class="nav-section-label">General</p>
+            <a href="dashboard.php?section=overview"
+               class="<?php echo $section === 'overview' ? 'active' : '' ?>">
+                Dashboard
+            </a>
 
-        <p class="nav-section-label">Gestión</p>
-        <a href="dashboard.php?section=properties"
-           class="<?php echo $section === 'properties' ? 'active' : '' ?>">
-            Propiedades
-        </a>
-        <a href="dashboard.php?section=quotes"
-           class="<?php echo $section === 'quotes' ? 'active' : '' ?>">
-            Cotizaciones
-        </a>
-        <a href="dashboard.php?section=users"
-           class="<?php echo $section === 'users' ? 'active' : '' ?>">
-            Usuarios
-        </a>
+            <p class="nav-section-label">Gestión</p>
+            <a href="dashboard.php?section=properties"
+               class="<?php echo $section === 'properties' ? 'active' : '' ?>">
+                Propiedades
+            </a>
+            <a href="dashboard.php?section=quotes"
+               class="<?php echo $section === 'quotes' ? 'active' : '' ?>">
+                Cotizaciones
+            </a>
+            <a href="dashboard.php?section=users"
+               class="<?php echo $section === 'users' ? 'active' : '' ?>">
+                Usuarios
+            </a>
 
-        <hr class="nav-divider">
-        <a href="index.php">← Volver al sitio</a>
-        <a href="logout.php">Cerrar sesión</a>
+            <hr class="nav-divider">
+            <a href="index.php">← Volver al sitio</a>
+            <a href="logout.php">Cerrar sesión</a>
+        </div>
+
+        <div class="sidebar-footer">
+            <span>Move & Go PR</span>
+            <span>© <?= date('Y') ?></span>
+        </div>
     </div>
 
     <div class="main-content">
@@ -108,7 +115,7 @@ if (!in_array($section, $allowed_sections)) {
                 include 'includes/properties_panel.php';
                 break;
             case 'quotes':
-                echo '<h1>Cotizaciones</h1><p style="color:#888;">Esta sección está en desarrollo.</p>';
+                include 'includes/quotes_panel.php';
                 break;
             case 'users':
                 echo '<h1>Usuarios</h1><p style="color:#888;">Esta sección está en desarrollo.</p>';

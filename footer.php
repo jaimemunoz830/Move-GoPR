@@ -1,4 +1,4 @@
-<a href="dashboard.php" style="position: fixed; top: 15px; right: 20px; color: rgba(255,255,255,0.5); font-size: 1.1rem; text-decoration: none; z-index: 9999;">
+<a href="dashboard.php" style="position: fixed; top: 15px; right: 20px; color: rgba(0,0,0,0.5); font-size: 1.1rem; text-decoration: none; z-index: 9999;">
     <i class="fa-solid fa-lock"></i>
 </a>
 
