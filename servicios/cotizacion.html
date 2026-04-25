@@ -15,7 +15,6 @@
         <h1 class="fw-bold">Solicitar Cotización</h1>
         <p>Completa el formulario y te responderemos lo antes posible</p>
 
-        <!-- BOTÓN VOLVER -->
         <a href="index.html" class="btn btn-light mt-3">
             ← Volver al Inicio
         </a>
@@ -31,22 +30,22 @@
 
                 <div class="mb-3">
                     <label class="form-label">Nombre Completo</label>
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" name="nombre" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Teléfono</label>
-                    <input type="tel" class="form-control" required>
+                    <input type="tel" class="form-control" name="telefono" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
-                    <input type="email" class="form-control" required>
+                    <input type="email" class="form-control" name="email" required>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Tipo de Servicio</label>
-                    <select class="form-select" required>
+                    <select class="form-select" name="servicio" required>
                         <option value="">Seleccione...</option>
                         <option>Bienes Raíces</option>
                         <option>Mudanza</option>
@@ -56,7 +55,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Descripción del Servicio</label>
-                    <textarea class="form-control" rows="4" required></textarea>
+                    <textarea class="form-control" name="descripcion" rows="4" required></textarea>
                 </div>
 
                 <button type="submit" class="btn btn-success w-100">
@@ -73,22 +72,25 @@
 document.getElementById("cotizacionForm").addEventListener("submit", function(e){
     e.preventDefault();
 
-    const inputs = this.querySelectorAll("input, select, textarea");
+    const form = e.target;
 
-    const nombre = inputs[0].value;
-    const telefono = inputs[1].value;
-    const email = inputs[2].value;
-    const servicio = inputs[3].value;
-    const descripcion = inputs[4].value;
+    const nombre = form.nombre.value;
+    const telefono = form.telefono.value;
+    const email = form.email.value;
+    const servicio = form.servicio.value;
+    const descripcion = form.descripcion.value;
 
-    const mensaje = `Hola Move & Go PR,%0A
-Nombre: ${nombre}%0A
-Teléfono: ${telefono}%0A
-Email: ${email}%0A
-Servicio: ${servicio}%0A
+    const mensaje = `Hola Move & Go PR:
+
+Nombre: ${nombre}
+Teléfono: ${telefono}
+Email: ${email}
+Servicio: ${servicio}
 Descripción: ${descripcion}`;
 
-    window.open(`https://wa.me/17875438201?text=${mensaje}`, "_blank");
+    const url = "https://wa.me/17875438201?text=" + encodeURIComponent(mensaje);
+
+    window.open(url, "_blank");
 });
 </script>
 
