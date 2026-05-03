@@ -712,23 +712,26 @@ function loadProperties() {
   );
 
   filtered.forEach(property => {
-    const iconColor = property.type === 'sale' ? '#4E8F22' : '#1e40af';
-    const icon = L.divIcon({
-      html: `<div style="background:${iconColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
-      className: '',
-      iconSize: [14, 14],
-      iconAnchor: [7, 7]
-    });
+    // Only place a map marker if the property has coordinates
+    if (property.lat && property.lng) {
+      const iconColor = property.type === 'sale' ? '#4E8F22' : '#1e40af';
+      const icon = L.divIcon({
+        html: `<div style="background:${iconColor};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.4)"></div>`,
+        className: '',
+        iconSize: [14, 14],
+        iconAnchor: [7, 7]
+      });
 
-    const marker = L.marker([property.lat, property.lng], { icon }).addTo(map);
-    marker.on('click', () => {
-      showDetails(property);
-      map.setView([property.lat, property.lng], 13);
-    });
-    marker.propData = property;
-    propMarkers.push(marker);
+      const marker = L.marker([parseFloat(property.lat), parseFloat(property.lng)], { icon }).addTo(map);
+      marker.on('click', () => {
+        showDetails(property);
+        map.setView([parseFloat(property.lat), parseFloat(property.lng)], 13);
+      });
+      marker.propData = property;
+      propMarkers.push(marker);
+    }
 
-    // Card
+    // Card always shows regardless of whether the property has coordinates
     const card = document.createElement('div');
     card.className = 'propertyCard';
     card.innerHTML = `
@@ -738,7 +741,9 @@ function loadProperties() {
       <p>${property.price}</p>
     `;
     card.onclick = () => {
-      map.setView([property.lat, property.lng], 13);
+      if (property.lat && property.lng) {
+        map.setView([parseFloat(property.lat), parseFloat(property.lng)], 13);
+      }
       showDetails(property);
     };
     list.appendChild(card);

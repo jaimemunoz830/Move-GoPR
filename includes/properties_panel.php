@@ -65,35 +65,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      */
     if ($form_action === 'create') {
         $image_path = handle_image_upload($upload_dir, $upload_url_prefix);
-        if ($image_path === false) $image_path = '';
-        if ($image_path === null) $image_path = '';
 
         $stmt = $pdo->prepare("
             INSERT INTO properties
-                (title, property_type, listing_type, price, address, municipio_id,
-                 sqft, beds, baths, parking, furnished, featured,
-                 status, description, image, lat, lng)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (title, property_type, type, price, address, municipio_id,
+                 sqft, beds, bath, parking, laundry, pets, mailbox,
+                 furnished, featured, status, description, lat, lng)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([
             trim($_POST['title']),
             $_POST['property_type'],
-            $_POST['listing_type'],
+            $_POST['type'],
             (float)$_POST['price'],
             trim($_POST['address']),
             (int)$_POST['municipio_id'],
-            !empty($_POST['sqft'])    ? (int)$_POST['sqft']    : null,
-            !empty($_POST['beds'])    ? (int)$_POST['beds']     : null,
-            !empty($_POST['baths'])   ? (int)$_POST['baths']    : null,
-            !empty($_POST['parking']) ? (int)$_POST['parking']  : null,
+            !empty($_POST['sqft'])    ? (int)$_POST['sqft']      : null,
+            !empty($_POST['beds'])    ? (int)$_POST['beds']       : null,
+            !empty($_POST['bath'])    ? (int)$_POST['bath']       : null,
+            !empty($_POST['parking']) ? trim($_POST['parking'])   : null,
+            !empty($_POST['laundry']) ? trim($_POST['laundry'])   : null,
+            !empty($_POST['pets'])    ? trim($_POST['pets'])      : null,
+            !empty($_POST['mailbox']) ? trim($_POST['mailbox'])   : null,
             isset($_POST['furnished']) ? 1 : 0,
             isset($_POST['featured'])  ? 1 : 0,
             $_POST['status'],
             trim($_POST['description']),
-            $image_path,
             !empty($_POST['lat']) ? (float)$_POST['lat'] : null,
             !empty($_POST['lng']) ? (float)$_POST['lng'] : null,
         ]);
+
+        if ($image_path) {
+            $new_id = (int)$pdo->lastInsertId();
+            $pdo->prepare("
+                INSERT INTO property_images (property_id, image_url, is_primary, sort_order)
+                VALUES (?, ?, 1, 0)
+            ")->execute([$new_id, $image_path]);
+        }
+
         header("Location: dashboard.php?section=properties&msg=created");
         exit();
     }
@@ -108,32 +117,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $new_image = handle_image_upload($upload_dir, $upload_url_prefix);
 
-        if ($new_image === null || $new_image === false) {
-            $image_path = $old_image;
-        } else {
-            $image_path = $new_image;
-            if ($old_image && file_exists(dirname(__DIR__) . '/' . $old_image)) {
-                unlink(dirname(__DIR__) . '/' . $old_image);
-            }
-        }
-
         $stmt = $pdo->prepare("
             UPDATE properties SET
                 title         = ?,
                 property_type = ?,
-                listing_type  = ?,
+                type          = ?,
                 price         = ?,
                 address       = ?,
                 municipio_id  = ?,
                 sqft          = ?,
                 beds          = ?,
-                baths         = ?,
+                bath          = ?,
                 parking       = ?,
+                laundry       = ?,
+                pets          = ?,
+                mailbox       = ?,
                 furnished     = ?,
                 featured      = ?,
                 status        = ?,
                 description   = ?,
-                image         = ?,
                 lat           = ?,
                 lng           = ?
             WHERE id = ?
@@ -141,23 +143,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([
             trim($_POST['title']),
             $_POST['property_type'],
-            $_POST['listing_type'],
+            $_POST['type'],
             (float)$_POST['price'],
             trim($_POST['address']),
             (int)$_POST['municipio_id'],
-            !empty($_POST['sqft'])    ? (int)$_POST['sqft']    : null,
-            !empty($_POST['beds'])    ? (int)$_POST['beds']     : null,
-            !empty($_POST['baths'])   ? (int)$_POST['baths']    : null,
-            !empty($_POST['parking']) ? (int)$_POST['parking']  : null,
+            !empty($_POST['sqft'])    ? (int)$_POST['sqft']      : null,
+            !empty($_POST['beds'])    ? (int)$_POST['beds']       : null,
+            !empty($_POST['bath'])    ? (int)$_POST['bath']       : null,
+            !empty($_POST['parking']) ? trim($_POST['parking'])   : null,
+            !empty($_POST['laundry']) ? trim($_POST['laundry'])   : null,
+            !empty($_POST['pets'])    ? trim($_POST['pets'])      : null,
+            !empty($_POST['mailbox']) ? trim($_POST['mailbox'])   : null,
             isset($_POST['furnished']) ? 1 : 0,
             isset($_POST['featured'])  ? 1 : 0,
             $_POST['status'],
             trim($_POST['description']),
-            $image_path,
             !empty($_POST['lat']) ? (float)$_POST['lat'] : null,
             !empty($_POST['lng']) ? (float)$_POST['lng'] : null,
             $prop_id,
         ]);
+
+        if ($new_image) {
+            if ($old_image && file_exists(dirname(__DIR__) . '/' . $old_image)) {
+                unlink(dirname(__DIR__) . '/' . $old_image);
+            }
+            $pdo->prepare("DELETE FROM property_images WHERE property_id = ?")->execute([$prop_id]);
+            $pdo->prepare("
+                INSERT INTO property_images (property_id, image_url, is_primary, sort_order)
+                VALUES (?, ?, 1, 0)
+            ")->execute([$prop_id, $new_image]);
+        }
+
         header("Location: dashboard.php?section=properties&msg=updated");
         exit();
     }
@@ -169,16 +185,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($form_action === 'delete') {
         $prop_id = (int)$_POST['id'];
 
-       
-        $stmt = $pdo->prepare("SELECT image FROM properties WHERE id = ?");
-        $stmt->execute([$prop_id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row && $row['image'] && file_exists(dirname(__DIR__) . '/' . $row['image'])) {
-            unlink(dirname(__DIR__) . '/' . $row['image']);
+        $img_stmt = $pdo->prepare("SELECT image_url FROM property_images WHERE property_id = ?");
+        $img_stmt->execute([$prop_id]);
+        foreach ($img_stmt->fetchAll(PDO::FETCH_COLUMN) as $url) {
+            if ($url && file_exists(dirname(__DIR__) . '/' . $url)) {
+                unlink(dirname(__DIR__) . '/' . $url);
+            }
         }
 
-        $stmt = $pdo->prepare("DELETE FROM properties WHERE id = ?");
-        $stmt->execute([$prop_id]);
+        // CASCADE on property_images handles the child rows
+        $pdo->prepare("DELETE FROM properties WHERE id = ?")->execute([$prop_id]);
         header("Location: dashboard.php?section=properties&msg=deleted");
         exit();
     }
@@ -197,9 +213,10 @@ $municipios = $pdo->query(
 
 $prop = [
     'id' => null, 'title' => '', 'property_type' => 'house',
-    'listing_type' => 'sale', 'price' => '', 'address' => '',
-    'municipio_id' => '', 'sqft' => '', 'beds' => '', 'baths' => '',
-    'parking' => '', 'furnished' => 0, 'featured' => 0,
+    'type' => 'sale', 'price' => '', 'address' => '',
+    'municipio_id' => '', 'sqft' => '', 'beds' => '', 'bath' => '',
+    'parking' => '', 'laundry' => '', 'pets' => '', 'mailbox' => '',
+    'furnished' => 0, 'featured' => 0,
     'status' => 'available', 'description' => '', 'image' => '',
     'lat' => '', 'lng' => '',
 ];
@@ -209,12 +226,18 @@ if ($action === 'edit' && $prop_id) {
     $stmt = $pdo->prepare("SELECT * FROM properties WHERE id = ?");
     $stmt->execute([$prop_id]);
     $fetched = $stmt->fetch(PDO::FETCH_ASSOC);
-    // Si no se encuentra la propiedad, redirigimos al listado con un mensaje de error
     if (!$fetched) {
-        header("Location: dashboard.php?section=properties&msg=notfound"); 
+        header("Location: dashboard.php?section=properties&msg=notfound");
         exit();
     }
     $prop = $fetched;
+
+    // Load the primary image from property_images for the edit form preview
+    $img = $pdo->prepare(
+        "SELECT image_url FROM property_images WHERE property_id = ? AND is_primary = 1 LIMIT 1"
+    );
+    $img->execute([$prop_id]);
+    $prop['image'] = $img->fetchColumn() ?: '';
 }
 
 function status_badge($status) {
@@ -418,7 +441,9 @@ if ($action === 'list'): ?>
 
     <?php
     $properties = $pdo->query("
-        SELECT p.*, m.municipality
+        SELECT p.*, m.municipality,
+            (SELECT image_url FROM property_images
+              WHERE property_id = p.id AND is_primary = 1 LIMIT 1) AS image
         FROM properties p
         LEFT JOIN municipios m ON p.municipio_id = m.id
         ORDER BY p.created_at DESC
@@ -462,7 +487,7 @@ if ($action === 'list'): ?>
                             </td>
                             <td data-label="Título"><strong><?= htmlspecialchars($p['title']) ?></strong></td>
                             <td data-label="Tipo" style="text-transform:capitalize;"><?= htmlspecialchars($p['property_type']) ?></td>
-                            <td data-label="Listado"><?= $p['listing_type'] === 'sale' ? 'Venta' : 'Alquiler' ?></td>
+                            <td data-label="Listado"><?= $p['type'] === 'sale' ? 'Venta' : 'Alquiler' ?></td>
                             <td data-label="Precio">$<?= number_format($p['price'], 2) ?></td> <!-- TODO: Añadir logica /mes a precio de renta -->
                             <td data-label="Municipio"><?= htmlspecialchars($p['municipality'] ?? '—') ?></td>
                             <td data-label="Estado"><?= status_badge($p['status']) ?></td>
@@ -534,9 +559,9 @@ elseif ($action === 'add' || $action === 'edit'): ?>
                 </div>
                 <div class="form-group">
                     <label>Tipo de listado *</label>
-                    <select name="listing_type" required>
-                        <option value="sale"  <?= $prop['listing_type']==='sale' ?'selected':'' ?>>Venta</option>
-                        <option value="rent"  <?= $prop['listing_type']==='rent' ?'selected':'' ?>>Alquiler</option>
+                    <select name="type" required>
+                        <option value="sale" <?= $prop['type']==='sale' ?'selected':'' ?>>Venta</option>
+                        <option value="rent" <?= $prop['type']==='rent' ?'selected':'' ?>>Alquiler</option>
                     </select>
                 </div>
             </div>
@@ -620,15 +645,36 @@ elseif ($action === 'add' || $action === 'edit'): ?>
                 </div>
                 <div class="form-group">
                     <label>Baños</label>
-                    <input type="number" name="baths" min="0" max="99"
-                           value="<?= htmlspecialchars($prop['baths']) ?>"
+                    <input type="number" name="bath" min="0" max="99"
+                           value="<?= htmlspecialchars($prop['bath']) ?>"
                            placeholder="2">
                 </div>
                 <div class="form-group">
-                    <label>Estacionamientos</label>
-                    <input type="number" name="parking" min="0" max="99"
-                           value="<?= htmlspecialchars($prop['parking']) ?>"
-                           placeholder="1">
+                    <label>Estacionamiento</label>
+                    <input type="text" name="parking"
+                           value="<?= htmlspecialchars($prop['parking'] ?? '') ?>"
+                           placeholder="Ej. Garage Doble">
+                </div>
+            </div>
+
+            <div class="form-grid" style="margin-bottom:16px;">
+                <div class="form-group">
+                    <label>Laundry</label>
+                    <input type="text" name="laundry"
+                           value="<?= htmlspecialchars($prop['laundry'] ?? '') ?>"
+                           placeholder="Ej. Cuarto dedicado">
+                </div>
+                <div class="form-group">
+                    <label>Mascotas</label>
+                    <input type="text" name="pets"
+                           value="<?= htmlspecialchars($prop['pets'] ?? '') ?>"
+                           placeholder="Ej. Permitidas">
+                </div>
+                <div class="form-group">
+                    <label>Buzón</label>
+                    <input type="text" name="mailbox"
+                           value="<?= htmlspecialchars($prop['mailbox'] ?? '') ?>"
+                           placeholder="Ej. Sí">
                 </div>
             </div>
 

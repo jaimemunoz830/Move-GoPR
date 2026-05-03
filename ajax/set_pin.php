@@ -1,18 +1,12 @@
 <?php
-/**
- * ajax/set_pin.php
- * Creates or updates a pin on a location record.
- * Called by map.php → createPin() via fetch POST.
- */
 define('MOVE_GO_APP', true);
-require 'config.php';
-require_once 'db_queries.php';
+require '../config.php';
+require_once '../db_queries.php';
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 
 header('Content-Type: application/json');
 
-// Only admin and owner may create pins
 $role = $_SESSION['role'] ?? 'viewer';
 if (!in_array($role, ['admin', 'owner'], true)) {
     echo json_encode(['success' => false, 'error' => 'No autorizado']);
@@ -30,8 +24,6 @@ if (!$id || $lat === null || $lng === null) {
     exit;
 }
 
-$ok = setPinLocation($pdo, $id, $lat, $lng, $name);
-
-// Return updated name so JS can display it immediately
+$ok  = setPinLocation($pdo, $id, $lat, $lng, $name);
 $loc = getLocationById($pdo, $id);
 echo json_encode(['success' => $ok, 'name' => $loc['name'] ?? '']);
