@@ -270,6 +270,7 @@ function cargarServicios() {
     });
 }
 
+<script>
 function enviarWhatsApp() {
     let nombre    = document.getElementById("nombre").value.trim();
     let telefono  = document.getElementById("telefono").value.trim();
@@ -278,34 +279,50 @@ function enviarWhatsApp() {
     let ubicacion = document.getElementById("ubicacion").value.trim();
     let mensaje   = document.getElementById("mensaje").value.trim();
 
-    if (!nombre || !telefono) {
-        alert("Por favor, llena los campos principales.");
+    // VALIDACIÓN
+    if (!nombre || !telefono || !servicio || !mensaje) {
+        alert("Por favor, completa los campos obligatorios.");
         return;
     }
 
-    // Guarda la solicitud en la base de datos
-    // -Jaime
+    // GUARDAR EN BASE DE DATOS (NO TOCAR)
     const fd = new FormData();
     fd.append('tipo_servicio', 'mudanza');
-    fd.append('nombre',    nombre);
-    fd.append('telefono',  telefono);
-    fd.append('email',     email);
-    fd.append('servicio',  servicio);
+    fd.append('nombre', nombre);
+    fd.append('telefono', telefono);
+    fd.append('email', email);
+    fd.append('servicio', servicio);
     fd.append('ubicacion', ubicacion);
-    fd.append('mensaje',   mensaje);
-    fetch('submit_quote.php', { method: 'POST', body: fd }).catch(() => {});
+    fd.append('mensaje', mensaje);
 
-    let texto = `*Nueva Cotización - Move & Go PR*%0A%0A` +
-                `*Nombre:* ${nombre}%0A` +
-                `*Teléfono:* ${telefono}%0A` +
-                `*Servicio:* ${servicio}%0A` +
-                `*Ubicación:* ${ubicacion}%0A` +
-                `*Detalle:* ${mensaje}`;
+    fetch('submit_quote.php', { 
+        method: 'POST', 
+        body: fd 
+    }).catch(() => {});
 
-    window.open("https://wa.me/17875438201?text=" + texto, "_blank");
-    cerrarForm(); //Cierra el formulario después de enviar a WhatsApp
+    // MENSAJE PROFESIONAL PARA WHATSAPP
+    let texto = `🚚 *Nueva Cotización - Move & Go PR*
+
+👤 *Nombre:* ${nombre}
+📞 *Teléfono:* ${telefono}
+📧 *Email:* ${email}
+
+📦 *Servicio:* ${servicio}
+📍 *Ubicación:* ${ubicacion}
+
+📝 *Detalle:*
+${mensaje}`;
+
+    // CODIFICAR TEXTO (CLAVE 🔥)
+    let url = "https://wa.me/17875438201?text=" + encodeURIComponent(texto);
+
+    // ABRIR WHATSAPP
+    window.open(url, "_blank");
+
+    // CERRAR FORM
+    cerrarForm();
 }
-
+    
 function enviarEmail() {
     let n = document.getElementById("nombre").value;
     let t = document.getElementById("telefono").value;
