@@ -1,0 +1,642 @@
+/* ===================================================
+   MAP.CSS — Estilos exclusivos de map.php
+   No modificar styles.css con estos estilos.
+   =================================================== */
+
+/* Estructura de página completa en columna */
+body.page-map {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+
+#mapPage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 18px;
+  box-sizing: border-box;
+}
+
+/* ===================================================
+   BARRA DE FILTROS
+   =================================================== */
+#filterBar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#filterBar span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #3B6E1A;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+
+.filterBtn {
+  padding: 8px 20px;
+  border: 2px solid #4E8F22;
+  border-radius: 8px;
+  background: transparent;
+  color: #3B6E1A;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover,
+.filterBtn.active {
+  background: #4E8F22;
+  color: white;
+}
+
+/* ===================================================
+   FILA PRINCIPAL: MAPA + PANEL DERECHO
+   =================================================== */
+#mapRow {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+#rightPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* ===================================================
+   MAPA Y CONTROL DE RADIO
+   =================================================== */
+#mapContainer {
+  position: relative;
+  flex: 2;
+  height: 540px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  border: 3px solid #78B833;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+#rangeInfo {
+  position: absolute;
+  top: 12px;
+  left: 70px;
+  background: white;
+  padding: 9px 14px;
+  border-radius: 10px;
+  z-index: 400;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1a1a1a;
+}
+
+#rangeInfo input[type=range] {
+  accent-color: #4E8F22;
+  width: 110px;
+}
+
+#radiusValue {
+  color: #4E8F22;
+  font-weight: 700;
+  min-width: 20px;
+}
+
+/* ===================================================
+   PANEL DERECHO — DETALLE Y SIDEBAR
+   =================================================== */
+#propertyDetails {
+  background: white;
+  padding: 18px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-top: 4px solid #4E8F22;
+}
+
+#propertyDetails img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  object-fit: cover;
+  max-height: 160px;
+  height: auto;
+}
+
+#propertyDetails h2 { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin: 0 0 6px; }
+#propertyDetails p  { font-size: 0.85rem; color: #555; margin: 3px 0; }
+
+#sidebar {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 16px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#sidebar h2 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #3B6E1A;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #BFEA8C;
+}
+
+/* ===================================================
+   RADIUS CARDS
+   =================================================== */
+.radiusCard {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-left: 4px solid #4E8F22;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.radiusCard small {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #4E8F22;
+  margin-top: 2px;
+}
+
+.radiusCard .rc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.radiusCard .rc-top:hover { opacity: 0.75; }
+.radiusCard .rc-name { flex: 1; }
+
+.btn-more-info {
+  flex-shrink: 0;
+  margin-top: 8px;
+  width: 100%;
+  padding: 5px 0;
+  background: #4E8F22;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-more-info:hover { background: #3B6E1A; }
+
+/* ===================================================
+   TIRA HORIZONTAL DE PROPIEDADES
+   =================================================== */
+#propertyList {
+  display: flex;
+  overflow-x: auto;
+  gap: 14px;
+  padding: 4px 2px 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #4E8F22 #f0f0f0;
+}
+
+.propertyCard {
+  min-width: 200px;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.propertyCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.propertyCard img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.propertyCard h4 { font-size: 0.85rem; font-weight: 700; color: #1a1a1a; margin: 0 0 4px; }
+.propertyCard p  { font-size: 0.8rem; color: #4E8F22; font-weight: 600; margin: 0; }
+
+.propertyCard .badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-bottom: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-sale { background: #dcfce7; color: #166534; }
+.badge-rent { background: #dbeafe; color: #1e40af; }
+
+.propertyCard .btn-card-info {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 6px 0;
+  background: #4E8F22;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+  text-align: center;
+}
+
+.propertyCard .btn-card-info:hover {
+  background: #3B6E1A;
+  transform: translateY(-1px);
+}
+
+/* ===================================================
+   PANEL DE DETALLE EXPANDIDO
+   =================================================== */
+#detailPanel {
+  display: none;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  border-top: 4px solid #4E8F22;
+  padding: 24px;
+  animation: mapSlideDown 0.25s ease;
+  position: relative;
+}
+
+@keyframes mapSlideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+#detailPanel .dp-close {
+  position: absolute;
+  top: 16px; right: 18px;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  color: #666;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.2s;
+}
+
+#detailPanel .dp-close:hover { background: #f0f0f0; border-color: #999; }
+
+/* Carrusel */
+.dp-carousel {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: #f0f0f0;
+}
+
+.dp-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.4s ease-in-out;
+}
+
+.dp-track img {
+  min-width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: #f0f0f0;
+}
+
+.dp-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.45);
+  color: white;
+  border: none;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.dp-btn:hover { background: rgba(0,0,0,0.7); }
+.dp-btn.prev  { left: 12px; }
+.dp-btn.next  { right: 12px; }
+
+.dp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.dp-header h2 { font-size: 1.2rem; font-weight: 700; color: #1a1a1a; margin: 0; }
+.dp-price     { font-size: 1.1rem; font-weight: 800; color: #4E8F22; }
+
+.dp-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.dp-spec {
+  background: #f8f9fa;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e8f5e9;
+}
+
+.dp-spec .spec-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #888;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.dp-spec .spec-value { font-size: 0.9rem; font-weight: 600; color: #1a1a1a; }
+.dp-spec .spec-value i { color: #4E8F22; margin-right: 4px; }
+
+.dp-desc {
+  background: #f0faf0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  border-left: 4px solid #4E8F22;
+}
+
+.dp-desc h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #3B6E1A;
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dp-desc p { font-size: 0.88rem; color: #444; line-height: 1.7; margin: 0; }
+
+/* ===================================================
+   OVERLAY Y POPUP DE ADMINISTRADOR
+   =================================================== */
+#overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(2px);
+  z-index: 1999;
+}
+
+#popup {
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 36px 40px;
+  border-radius: 20px;
+  z-index: 2000;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+
+#popup h3 { text-align: center; font-weight: 700; font-size: 1.2rem; color: #1a1a1a; margin: 0 0 20px; }
+
+#popup label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#popup input, #popup select {
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 14px;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+  color: #495057;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+#popup input:focus, #popup select:focus { border-color: #4E8F22; }
+
+#popup .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+
+#popup button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+#popup button:first-child              { background: #4E8F22; color: white; }
+#popup button:first-child:hover        { background: #3B6E1A; transform: translateY(-2px); }
+#popup button:last-child               { background: transparent; color: #3B6E1A; border: 2px solid #4E8F22; }
+#popup button:last-child:hover         { background: #4E8F22; color: white; transform: translateY(-2px); }
+
+/* ===================================================
+   LIGHTBOX DEL CARRUSEL
+   =================================================== */
+#carouselLightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+#carouselLightbox.active { display: flex; }
+
+#carouselLightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.5);
+}
+
+#carouselLightbox .lb-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 2px solid rgba(255,255,255,0.5);
+  color: white;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#carouselLightbox .lb-close:hover {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.1);
+}
+
+/* ===================================================
+   RESPONSIVE MÓVIL
+   =================================================== */
+@media (max-width: 768px) {
+
+  #filterBar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 7px;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+  #filterBar::-webkit-scrollbar { display: none; }
+
+  .filterBtn {
+    white-space: nowrap;
+    padding: 7px 14px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  #mapRow {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  #mapContainer {
+    width: 100%;
+    height: 320px;
+    flex: none;
+  }
+
+  #rightPanel {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  #propertyDetails {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  #sidebar {
+    flex: 1;
+    min-width: 200px;
+    max-height: 200px;
+  }
+
+  #rangeInfo {
+    top: auto;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    box-sizing: border-box;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  #rangeInfo input[type=range] { width: 100px; }
+
+  #mapPage {
+    padding: 14px;
+    gap: 14px;
+  }
+
+  .dp-carousel { height: 260px; }
+
+  .dp-specs {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .nav-links a[href="map.php"] {
+    padding-right: 36px;
+  }
+
+  .nav-links a {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  #rightPanel { flex-direction: column; }
+
+  #propertyDetails,
+  #sidebar {
+    min-width: unset;
+    width: 100%;
+  }
+}
