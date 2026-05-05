@@ -4,74 +4,11 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoveAndGoPR</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <style>
-        .main-header {
-            background: #1e3a8a;
-            padding: 1rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .logo h1 {
-            color: white;
-            margin: 0;
-            font-size: 1.5rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover {
-            color: #80ff00; 
-        }
-
-        .btn-login {
-            background: #80ff00;
-            color: #1e3a8a !important;
-            padding: 8px 20px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .btn-login:hover {
-            background: white !important;
-        }
-
-        .btn-admin-tool {
-            border: 1px solid #80ff00;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px !important;
-        }
-    </style>
-</head>
-<body>
-
 <header class="main-header">
     <div class="logo">
-        <h1>MoveAnd<span class="green">GoPR</span></h1>
+        <a href="index.php">
+            <img src="img/moveandgopr-logo-solito.png" alt="Move & Go PR" class="header-logo">
+        </a>
     </div>
     
     <nav class="nav-links">
@@ -82,11 +19,124 @@ if (session_status() === PHP_SESSION_NONE) {
         <?php if(isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
             <a href="dashboard.php" class="btn-admin-tool">Dashboard</a>
             <a href="db_test.php" class="btn-admin-tool">DB Test</a>
-            <a href="logout.php" class="btn-login">Cerrar Sesión</a>
+            <a href="logout.php" class="btn-logout">Cerrar Sesión</a>
         <?php elseif(isset($_SESSION['user_id'])): ?>
-            <a href="logout.php" class="btn-login">Cerrar Sesión</a>
-        <?php else: ?>
-            <a href="login.php" class="btn-login">Iniciar Sesión</a>
+            <a href="logout.php" class="btn-logout">Cerrar Sesión</a>
         <?php endif; ?>
     </nav>
 </header>
+
+<style>
+    .main-header {
+        background: linear-gradient(135deg, #4E8F22 0%, #78B833 50%, #BFEA8C 100%);
+        padding: 0.6rem 5%;
+        height: 70px;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        position: sticky;
+        top: 0;
+        z-index: 2000;
+    }
+
+    .header-logo {
+        height: 100%;      
+        max-height: 95px;
+        width: auto;
+        display: block;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        transition: opacity 0.2s ease;
+    }
+
+    .header-logo:hover {
+        opacity: 0.85;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+    }
+
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: color 0.2s ease;
+        text-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .nav-links a:hover {
+        color: #1a3a0a;
+    }
+
+    .btn-admin-tool {
+        border: 1px solid rgba(255,255,255,0.7);
+        padding: 5px 12px;
+        border-radius: 5px;
+        font-size: 0.78rem !important;
+        background: rgba(255,255,255,0.15);
+        transition: background 0.2s ease !important;
+    }
+
+    .btn-admin-tool:hover {
+        background: rgba(255,255,255,0.3) !important;
+        color: white !important;
+    }
+
+    .btn-logout {
+        background: rgba(0,0,0,0.2);
+        color: white !important;
+        padding: 6px 16px;
+        border-radius: 5px;
+        font-size: 0.85rem !important;
+        transition: background 0.2s ease !important;
+    }
+
+    .btn-logout:hover {
+        background: rgba(0,0,0,0.35) !important;
+        color: white !important;
+    }
+
+    @media (max-width: 768px) {
+        .main-header {
+            height: 56px;
+            padding: 0.4rem 3%;
+            gap: 8px;
+        }
+
+        .header-logo {
+            height: 65px;        
+            max-height: 65px;
+        }
+
+        .nav-links {
+            gap: 10px;
+            flex-shrink: 1;
+            overflow: hidden;
+        }
+
+        .nav-links a {
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+
+        .nav-links a[href="map.php"] {
+            padding-right: 36px;
+        }
+
+        .btn-logout {
+            font-size: 0.62rem !important;
+            padding: 3px 8px;
+        }
+
+        .btn-admin-tool {
+            font-size: 0.60rem !important;
+            padding: 3px 6px;
+        }
+    }
+</style>
