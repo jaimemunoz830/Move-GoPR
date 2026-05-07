@@ -1,9 +1,24 @@
+<!-- ===========================================
+  Aquí han trabajado:
+    Esteban G. Echevarria Perez, Jaime A. Muñoz
+============================================== -->
+
 <?php
+//  ===========================================
+//   Configuración de sesión
+// ============================================== 
 require_once 'config.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 ?>
+
+<!-- ===========================================
+  Estructura del header
+  Los enlaces de administrador solo se muestran si el rol
+  de sesión es 'admin'. El botón de cerrar
+  sesión aparece para cualquier usuario logueado.
+============================================== -->
 <header class="main-header">
     <div class="logo">
         <a href="index.php">
@@ -27,6 +42,11 @@ if (session_status() === PHP_SESSION_NONE) {
 </header>
 
 <style>
+    /* ===========================================
+       Estilos del header
+       Queda sobre todos los elementos de la 
+       página (z-index: 2000).
+    ============================================== */
     .main-header {
         background: linear-gradient(135deg, #4E8F22 0%, #78B833 50%, #BFEA8C 100%);
         padding: 0.6rem 5%;
@@ -39,8 +59,11 @@ if (session_status() === PHP_SESSION_NONE) {
         position: sticky;
         top: 0;
         z-index: 2000;
-    }
+        }
 
+    /* ===========================================
+       Logo
+    ============================================== */
     .header-logo {
         height: 100%;      
         max-height: 95px;
@@ -54,6 +77,9 @@ if (session_status() === PHP_SESSION_NONE) {
         opacity: 0.85;
     }
 
+    /* ===========================================
+       Navegación principal
+    ============================================== */
     .nav-links {
         display: flex;
         gap: 24px;
@@ -74,6 +100,10 @@ if (session_status() === PHP_SESSION_NONE) {
         color: #1a3a0a;
     }
 
+    /* ===========================================
+       Botones de herramientas de administrador
+       Visibles únicamente para el rol admin
+    ============================================== */
     .btn-admin-tool {
         border: 1px solid rgba(255,255,255,0.7);
         padding: 5px 12px;
@@ -88,6 +118,9 @@ if (session_status() === PHP_SESSION_NONE) {
         color: white !important;
     }
 
+    /* ===========================================
+       Botón de cerrar sesión
+    ============================================== */
     .btn-logout {
         background: rgba(0,0,0,0.2);
         color: white !important;
@@ -102,6 +135,12 @@ if (session_status() === PHP_SESSION_NONE) {
         color: white !important;
     }
 
+    /* ===========================================
+       Responsive — pantallas pequeñas
+       Reduce alturas y tamaños de fuente para
+       móvil. El enlace al mapa conserva padding
+       derecho para no quedar cortado.
+    ============================================== */
     @media (max-width: 768px) {
         .main-header {
             height: 56px;

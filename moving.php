@@ -1,3 +1,8 @@
+<!-- ===========================================
+  Aqui ha trabajado:
+    Alejandro Irizarry, Kenneth J. Gonzalez
+============================================== -->
+
 <?php
 require 'config.php';
 session_start();

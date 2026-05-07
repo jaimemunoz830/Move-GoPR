@@ -1,8 +1,13 @@
+<!-- ===========================================
+  Aqui han trabajado:
+    Esteban G Echevarria, Jaime Muñoz, Gustavo Pagan, Christian J. Lespier
+============================================== -->
+
 <?php
 /*--CONFIGURACIÓN INICIAL---------*/
 define('MOVE_GO_APP', true);   // requerido por db_queries.php para verificación de seguridad
 require 'config.php';          // establece $pdo (conexión PDO)
-require_once 'db_queries.php'; // todas las funciones de BD están aquí
+require_once 'db_queries.php'; // todas las funciones de base de datos están aquí
 
 if (session_status() === PHP_SESSION_NONE) session_start();
 $role = $_SESSION['role'] ?? 'viewer';
@@ -163,7 +168,7 @@ document.addEventListener('keydown', (e) => {
 /*--DATOS INYECTADOS DESDE PHP / BASE DE DATOS---------*/
 /* Las variables PHP se serializan como JSON y se asignan
    directamente a constantes de JavaScript. Las imágenes
-   se extraen del subarreglo anidado que devuelve la BD. */
+   se extraen del subarreglo anidado que devuelve la base de datos. */
 const properties          = <?= $propertiesJson ?>;
 const pinnedLocations     = <?= $pinnedJson ?>;
 const unpinnedLocations   = <?= $unpinnedJson ?>;
@@ -593,7 +598,7 @@ function dpGoTo(index) {
   });
 }
 
-/*--MARCADORES DE PINPOINTS (BD VÍA PHP)---------*/
+/*--MARCADORES DE PINPOINTS (base de datos VÍA PHP)---------*/
 /* Lee las ubicaciones pineadas desde los datos inyectados
    por PHP y coloca un marcador Leaflet por cada una.
    Los admins pueden hacer clic para eliminar el pin;
@@ -640,7 +645,7 @@ function loadPinMarkers() {
 /* Clic derecho en el mapa abre un modal para que los
    admins elijan un registro de ubicación y lo pinen en
    las coordenadas clickeadas. La operación se persiste
-   en la BD mediante una llamada AJAX.                  */
+   en la base de datos mediante una llamada AJAX.                  */
 let selectedLatLng = null;
 
 document.getElementById('map').addEventListener('contextmenu', function(e) {

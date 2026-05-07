@@ -5,7 +5,7 @@
  * Permite a los administradores ver estadísticas clave, gestionar propiedades, etc
  * 
  * 
- * @author     Christian
+ * @author     Christian J. Lespier Vals
  * @author     Jaime A. Muñoz Rodriguez
  * @version    1.2
  */

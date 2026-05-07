@@ -1,4 +1,10 @@
+<!-- ===========================================
+  Aquí han trabajado:
+    Esteban G Echevarria, Jaime A Muñoz, Christian J Lespier
+============================================== -->
+
 <?php
+
 /**
  * DB tables needed:
  *   properties      — one row per listing
@@ -7,11 +13,11 @@
  *
  * db_queries.php — Move & Go PR
  * ─────────────────────────────────────────────────────────────
- * Central file for all database reads used across the project.
- * Include wherever DB data is needed:
+ * Archivo central para todas las lecturas de la base de datos
+ * usadas en el proyecto. Inclúyelo donde se necesiten datos:
  *   require_once 'db_queries.php';
  *
- * Requires $pdo to already be defined (set in config.php).
+ * Requiere que $pdo ya esté definido (configurado en config.php).
  * ─────────────────────────────────────────────────────────────
  *
  * EXPECTED TABLE SCHEMAS
@@ -58,28 +64,35 @@
  *   description TEXT           nullable
  */
 
-// ── Prevent direct access ────────────────────────────────────
+/* ===========================================
+  Bloque de seguridad — acceso directo
+  Impide ejecutar este archivo directamente
+  desde el navegador sin pasar por la app.
+============================================== */
 if (!defined('MOVE_GO_APP')) {
     http_response_code(403);
     exit('Direct access not allowed.');
 }
 
-// ─────────────────────────────────────────────────────────────
-//  PROPERTIES
-// ─────────────────────────────────────────────────────────────
+/* ===========================================
+  SECCIÓN: PROPIEDADES
+  Funciones para leer y formatear propiedades
+  desde la tabla `properties`.
+============================================== */
 
-/**
- * Format numeric property fields into display strings for the map UI.
- * Mutates the row in place so getProperties / getPropertyById stay clean.
- */
+/* ===========================================
+  formatPropertyFields()
+  Convierte los campos numéricos de una propiedad
+  a cadenas de texto legibles para la interfaz
+  del mapa (precio, área, cuartos, baños).
+  Modifica el arreglo directamente por referencia.
+============================================== */
 function formatPropertyFields(array &$prop): void
 {
-    // Price: always a decimal in DB; format with /mes suffix for rentals
     $price = (float)$prop['price'];
     $prop['price'] = '$' . number_format($price, 0, '.', ',')
         . ($prop['type'] === 'rent' ? '/mes' : '');
 
-    // Numeric specs → friendly strings (skip if null/zero)
     if (!empty($prop['sqft'])) {
         $prop['sqft'] = number_format((int)$prop['sqft']) . ' ft²';
     }
@@ -93,13 +106,11 @@ function formatPropertyFields(array &$prop): void
     }
 }
 
-/**
- * Fetch all available properties, optionally filtered by type.
- *
- * @param  PDO         $pdo
- * @param  string|null $type  'sale' | 'rent' | null = all
- * @return array  Each row includes formatted display fields and an 'images' sub-array.
- */
+/* ===========================================
+  getProperties()
+  Devuelve todas las propiedades disponibles,
+  con filtro opcional por tipo (venta/alquiler).
+============================================== */
 function getProperties(PDO $pdo, ?string $type = null): array
 {
     if ($type && in_array($type, ['sale', 'rent'], true)) {
@@ -122,7 +133,7 @@ function getProperties(PDO $pdo, ?string $type = null): array
             ? reset($primary)['image_url']
             : ($prop['images'][0]['image_url'] ?? '');
 
-        // Alias for JS compatibility (map uses 'desc')
+        // Alias para compatibilidad con el JS del mapa (usa 'desc')
         $prop['desc'] = $prop['description'] ?? '';
 
         formatPropertyFields($prop);
@@ -132,13 +143,12 @@ function getProperties(PDO $pdo, ?string $type = null): array
     return $properties;
 }
 
-/**
- * Fetch all images for a single property, ordered by sort_order.
- *
- * @param  PDO $pdo
- * @param  int $propertyId
- * @return array
- */
+/* ===========================================
+  getPropertyImages()
+  Devuelve todas las imágenes de una propiedad
+  ordenadas por imagen principal primero y
+  luego por sort_order ascendente.
+============================================== */
 function getPropertyImages(PDO $pdo, int $propertyId): array
 {
     $stmt = $pdo->prepare(
@@ -150,13 +160,12 @@ function getPropertyImages(PDO $pdo, int $propertyId): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/**
- * Fetch a single available property by ID (with images and formatted fields).
- *
- * @param  PDO $pdo
- * @param  int $id
- * @return array|null
- */
+/* ===========================================
+  getPropertyById()
+  Busca y devuelve una sola propiedad disponible
+  por su ID, incluyendo imágenes y campos
+  formateados. Retorna null si no existe.
+============================================== */
 function getPropertyById(PDO $pdo, int $id): ?array
 {
     $stmt = $pdo->prepare(
@@ -178,17 +187,18 @@ function getPropertyById(PDO $pdo, int $id): ?array
     return $prop;
 }
 
-// ─────────────────────────────────────────────────────────────
-//  PINPOINT LOCATIONS
-// ─────────────────────────────────────────────────────────────
+/* ===========================================
+  SECCIÓN: UBICACIONES / PINPOINTS
+  Funciones para leer los marcadores del mapa
+  desde la tabla `locations`.
+============================================== */
 
-/**
- * Fetch all locations, optionally filtered by pinpoint status.
- *
- * @param  PDO         $pdo
- * @param  string|null $pinpoint  'yes' | 'no' | null = all
- * @return array
- */
+/* ===========================================
+  getLocations()
+  Devuelve todas las ubicaciones, con filtro
+  opcional por estado de pin ('yes' / 'no').
+  Sin filtro retorna la tabla completa.
+============================================== */
 function getLocations(PDO $pdo, ?string $pinpoint = null): array
 {
     if ($pinpoint && in_array($pinpoint, ['yes', 'no'], true)) {
@@ -202,12 +212,12 @@ function getLocations(PDO $pdo, ?string $pinpoint = null): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/**
- * Fetch only locations that have been pinned (pinpoint='yes' with valid coords).
- *
- * @param  PDO $pdo
- * @return array
- */
+/* ===========================================
+  getPinnedLocations()
+  Devuelve solo las ubicaciones que tienen pin
+  activo y coordenadas válidas asignadas.
+  Usado para cargar marcadores en el mapa.
+============================================== */
 function getPinnedLocations(PDO $pdo): array
 {
     $stmt = $pdo->query(
@@ -220,13 +230,11 @@ function getPinnedLocations(PDO $pdo): array
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/**
- * Fetch a single location by ID.
- *
- * @param  PDO $pdo
- * @param  int $id
- * @return array|null
- */
+/* ===========================================
+  getLocationById()
+  Busca y devuelve una sola ubicación por ID.
+  Retorna null si no existe el registro.
+============================================== */
 function getLocationById(PDO $pdo, int $id): ?array
 {
     $stmt = $pdo->prepare("SELECT * FROM locations WHERE id = :id");
@@ -235,20 +243,18 @@ function getLocationById(PDO $pdo, int $id): ?array
     return $row ?: null;
 }
 
-// ─────────────────────────────────────────────────────────────
-//  ADMIN WRITES  (used by AJAX endpoints only)
-// ─────────────────────────────────────────────────────────────
+/* ===========================================
+  SECCIÓN: ESCRITURAS DE ADMINISTRADOR
+  Funciones usadas exclusivamente por los
+  endpoints AJAX para modificar pinpoints.
+============================================== */
 
-/**
- * Set or update a pin on an existing location record.
- *
- * @param  PDO    $pdo
- * @param  int    $id
- * @param  float  $lat
- * @param  float  $lng
- * @param  string $name  Optional new display name (empty = keep existing)
- * @return bool
- */
+/* ===========================================
+  setPinLocation()
+  Activa el pin de una ubicación existente y
+  guarda sus coordenadas en la base de datos.
+  Si se pasa un nombre, también lo actualiza.
+============================================== */
 function setPinLocation(PDO $pdo, int $id, float $lat, float $lng, string $name = ''): bool
 {
     if ($name !== '') {
@@ -267,13 +273,12 @@ function setPinLocation(PDO $pdo, int $id, float $lat, float $lng, string $name 
     return $stmt->execute([':lat' => $lat, ':lng' => $lng, ':id' => $id]);
 }
 
-/**
- * Remove a pin from a location (keeps the record, clears coordinates).
- *
- * @param  PDO $pdo
- * @param  int $id
- * @return bool
- */
+/* ===========================================
+  removePinLocation()
+  Desactiva el pin de una ubicación y borra
+  sus coordenadas. El registro se conserva
+  en la tabla, solo se limpian lat y lng.
+============================================== */
 function removePinLocation(PDO $pdo, int $id): bool
 {
     $stmt = $pdo->prepare(

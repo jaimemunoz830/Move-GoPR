@@ -1,4 +1,13 @@
+<!-- =========================================== 
+  Aquí han trabajado:
+    Jaime A. Muñoz, Christian J. Lespier, Esteban G. Eschevarria
+=========================================== -->
+
 <?php
+// ===========================================
+//   Carga config y verifica que el rol sea admin.
+//   Redirige a login si no tiene acceso.
+// ==============================================
 require_once 'config.php';
 session_start();
 
@@ -7,6 +16,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
+// ===========================================
+//   Si se recibe delete_id y table por GET,
+//   borra el registro de esa tabla y redirige.
+// ==============================================
 if (isset($_GET['delete_id']) && isset($_GET['table'])) {
     $table = $_GET['table'];
     $id = (int)$_GET['delete_id'];
@@ -17,6 +30,9 @@ if (isset($_GET['delete_id']) && isset($_GET['table'])) {
     exit();
 }
 
+// ===========================================
+//   Obtiene la lista de todas las tablas de la base de datos.
+// ==============================================
 $tableQuery = $pdo->query("SHOW TABLES");
 $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
 ?>
@@ -27,6 +43,11 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
     <meta charset="UTF-8">
     <title>Move-GoPR | Database Test Panel</title>
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- ===========================================
+      Estilos del panel: contenedor, tarjetas de
+      estadísticas, tabla de datos y botón borrar.
+    ============================================== -->
     <style>
         .test-container { padding: 40px; max-width: 1200px; margin: auto; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
@@ -45,6 +66,11 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
 <body>
 
 <div class="test-container">
+
+   <!-- ===========================================
+     Banner de estado de conexión a la base de datos.
+     Verde si $pdo existe, rojo si falló.
+   ============================================== -->
    <?php if (isset($pdo)): ?>
         <div style="background: #d4edda; color: #155724; padding: 20px; border-radius: 10px; border: 1px solid #c3e6cb; margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
             <span style="font-size: 24px;">✅</span>
@@ -59,6 +85,9 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
         </div>
     <?php endif; ?>
 
+    <!-- ===========================================
+      Header del panel con título y enlace de vuelta.
+    ============================================== -->
     <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h1 style="margin:0;">MoveAnd<span class="green">GoPR</span> <small style="font-size: 15px; color: #666;">DB Demo</small></h1>
         <b>cuidao con el boton de borrar que funciona</b>
@@ -67,6 +96,10 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
         </div>
     </header>
 
+    <!-- ===========================================
+      Tarjetas de conteo por tabla.
+      Muestra cuántos registros tiene cada tabla.
+    ============================================== -->
     <div class="stats-grid">
         <?php foreach ($tables as $table): 
             $count = $pdo->query("SELECT count(*) FROM `$table`")->fetchColumn();
@@ -78,6 +111,11 @@ $tables = $tableQuery->fetchAll(PDO::FETCH_COLUMN);
         <?php endforeach; ?>
     </div>
 
+    <!-- ===========================================
+      Tablas de datos — una tarjeta por cada tabla.
+      Muestra hasta 10 filas con un botón de borrar
+      por fila que requiere confirmación del usuario.
+    ============================================== -->
     <?php foreach ($tables as $table): ?>
         <div class="db-card">
             <h3 style="color: #1e3a8a;">Tabla: <?php echo htmlspecialchars($table); ?></h3>
