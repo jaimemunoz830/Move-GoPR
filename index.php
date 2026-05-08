@@ -8,6 +8,7 @@ require_once 'config.php';
 if (session_status() === PHP_SESSION_NONE) session_start();
 ?>
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -74,24 +75,11 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
     <div class="about-row">
         <div class="about-text">
-            <span class="tag">Nuestra Historia</span>
-            <h3>Nacimos para hacer <span class="highlight">tu mudanza más fácil</span></h3>
-            <p>Move &amp; Go PR nació con una misión clara: brindar soluciones integrales de vivienda y logística a las familias de Puerto Rico. Desde nuestros inicios, nos hemos dedicado a conectar personas con el hogar que merecen.</p>
-            <p>Con años de experiencia en el mercado inmobiliario y de mudanzas locales, entendemos que cada traslado es único y merece atención personalizada.</p>
-            <div class="stats-row">
-                <div class="stat">
-                    <span class="num">500+</span>
-                    <span class="label">Mudanzas</span>
-                </div>
-                <div class="stat">
-                    <span class="num">10+</span>
-                    <span class="label">Años de exp.</span>
-                </div>
-                <div class="stat">
-                    <span class="num">78</span>
-                    <span class="label">Municipios</span>
-                </div>
-            </div>
+            <span class="tag">Nuestra Misión</span>
+            <h3>Buscamos que tu mudanza <span class="highlight">sea accesible</span></h3>
+            <p>Move &amp; Go fue nació con el objetivo de no solo facilitar el acceso a la compra y renta de bienes raices en nuestra isla, sino también conectarte con servicios de mudanzas y mantenimiento.</p>
+            <p>Trabajamos en toda la isla utilizando nuestra experiencia y recursos para suplir las necesidades de nuestros clientes.</p>
+            
         </div>
         <div class="about-img">
             <img src="img/GuaguaMove&Go.png" alt="Nuestra Historia">
@@ -100,10 +88,21 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
     <div class="about-row reverse bg-tinted">
         <div class="about-text">
-            <span class="tag">Nuestra Misión</span>
-            <h3>Comprometidos con <span class="highlight">cada familia</span> en PR</h3>
+            <span class="tag">Nuestra Valores</span>
+            <h3>Responsabilidad, Profesionalismo y Compromiso <span class="highlight">en cada trabajo</span></h3>
             <p>Creemos que mudarse no debe ser un dolor de cabeza. Por eso, ofrecemos un servicio completo que va desde encontrar la propiedad ideal hasta trasladar tus pertenencias con el mayor cuidado.</p>
             <p>Nuestro equipo profesional está disponible para guiarte en cada paso del proceso, con transparencia, rapidez y <span class="highlight">confianza</span>.</p>
+        <div class="stats-row">
+                <div class="stat">
+                    <span class="valor">Responsabilidad</span>
+                </div>
+                <div class="stat">
+                    <span class="valor">Profesionalismo</span>
+                </div>
+                <div class="stat">
+                    <span class="valor">Compromiso</span>
+                </div>
+            </div>
         </div>
         <div class="about-img">
             <img src="img/droneMove&Go.png" alt="Nuestra Misión">
@@ -112,10 +111,10 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
     <div class="about-row">
         <div class="about-text">
-            <span class="tag">Nuestros Valores</span>
-            <h3>Honestidad, <span class="highlight">excelencia</span> y servicio</h3>
-            <p>En Move &amp; Go PR los valores no son solo palabras — son la base de cada interacción. Tratamos tu hogar y tus bienes como si fueran nuestros, con el respeto y la dedicación que se merecen.</p>
-            <p>Somos un equipo local, orgulloso de servir a nuestra isla con los más altos estándares de calidad y profesionalismo.</p>
+            <span class="tag">Nuestro Agente Principal</span>
+            <h3>Yo soy <span class="highlight">Randall Torres</span></h3>
+            <p>Move &amp; Go nació con el objetivo de simplificar y volver a accesible todos los servicios necesarios en el mundo de las Bienes Raices.</p>
+            <p>Mi equipo y yo estamos listos para darte el mejor servicio posible, siempre acatando los más altos estándares de calidad y profesionalismo.</p>
         </div>
         <div class="about-img">
             <div class="realtor-card">
