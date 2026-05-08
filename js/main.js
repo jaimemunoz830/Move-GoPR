@@ -1,3 +1,8 @@
+/* ===========================================
+  Aqui ha trabajado:
+    Jaime Muñoz
+============================================== */
+
 document.querySelectorAll('a.nav-link').forEach(link => {
     link.addEventListener('click', function (e) {
         const targetId = this.getAttribute('href');
