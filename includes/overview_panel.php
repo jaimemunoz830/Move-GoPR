@@ -4,6 +4,7 @@
  * 
  * Panel de resumen general para el dashboard. Muestra estadísticas clave y accesos rápidos.   
  * 
+ * @author     Christian J. Lespier Vals
  * @author     Jaime A. Muñoz Rodriguez
  * @version    1.1
  */

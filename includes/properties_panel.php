@@ -13,6 +13,8 @@
  * - Mejorar la gestión de imágenes, permitiendo múltiples fotos por propiedad.
  * - Crear la interfear de para gestionar la galería de fotos (añadir/eliminar fotos adicionales).
  * 
+ * @author     Christian J. Lespier Vals
+ * @author     Esteban G. Echevarria Perez
  * @author     Jaime A. Muñoz Rodriguez
  * @version    1.0
  */

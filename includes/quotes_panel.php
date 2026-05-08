@@ -6,6 +6,7 @@
  * Muestra todos los tickets recibidos desde servicios-mejoras y servicios-mudanzas.
  * Permite ver en detalle cada solicitud y cambiar su estado.
  *
+ * @author Esteban G. Echevarria Perez
  * @author Jaime A. Muñoz Rodriguez
  * @version 1.1
  */
