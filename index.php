@@ -36,7 +36,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
         <div class="row g-4">
 
             <div class="col-md-4">
-                <a href="servicios/bienes-raices.html" class="card-link">
+                <a href="/map.php" class="card-link">
                     <div class="service-card p-4">
                         <i class="fa-solid fa-house service-icon"></i>
                         <h5 class="mt-3 fw-bold">Agente Inmobiliario</h5>
@@ -46,7 +46,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
             </div>
 
             <div class="col-md-4">
-                <a href="servicios/logistica-transporte.html" class="card-link">
+                <a href="/servicios-mudanzas.html" class="card-link">
                     <div class="service-card p-4">
                         <i class="fa-solid fa-truck-moving service-icon"></i>
                         <h5 class="mt-3 fw-bold">Servicio de Mudanza</h5>
@@ -56,7 +56,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
             </div>
 
             <div class="col-md-4">
-                <a href="servicios/servicios-mejoras.html" class="card-link">
+                <a href="/servicios-mejoras.html" class="card-link">
                     <div class="service-card p-4">
                         <i class="fa-solid fa-screwdriver-wrench service-icon"></i>
                         <h5 class="mt-3 fw-bold">Mantenimiento</h5>
@@ -71,7 +71,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 
 <!-- SOBRE NOSOTROS -->
 <section class="sobre-nosotros">
-    <h2 class="section-title">Sobre Nosotros</h2>
+   <a href="/sobre-nosotros.html"> <h2 class="section-title">Sobre Nosotros</h2> </a>
 
     <div class="about-row">
         <div class="about-text">
