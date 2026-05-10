@@ -82,7 +82,7 @@ if (session_status() === PHP_SESSION_NONE) session_start();
             
         </div>
         <div class="about-img">
-            <img src="img/GuaguaMove&Go.png" alt="Nuestra Historia">
+            <img src="img/GuaguaMove&Go.jpeg" alt="Nuestra Historia">
         </div>
     </div>
 
