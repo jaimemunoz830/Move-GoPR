@@ -7,9 +7,16 @@
  * @autor Jaime A. Muñoz Rodriguez
  * @version 1.0
  */
-include 'header.php';
+require_once 'config.php';
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 $error = "";
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -33,6 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Por favor, completa todos los campos.";
     }
 }
+include 'header.php';
 ?>
 
 <main class="login-container" style="padding: 100px 20px; min-height: 80vh; display: flex; justify-content: center; align-items: center; background: #f4f7f6;">
