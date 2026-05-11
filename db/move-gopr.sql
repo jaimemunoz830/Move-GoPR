@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 05, 2026 at 07:05 AM
+-- Generation Time: May 11, 2026 at 03:25 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,6 +20,23 @@ SET time_zone = "+00:00";
 --
 -- Database: `move-gopr`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `locations`
+--
+
+CREATE TABLE `locations` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `lat` decimal(10,7) DEFAULT NULL,
+  `lng` decimal(10,7) DEFAULT NULL,
+  `pinpoint` enum('yes','no') NOT NULL DEFAULT 'no',
+  `direction` varchar(100) DEFAULT NULL,
+  `size` varchar(100) DEFAULT NULL,
+  `description` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -193,32 +210,33 @@ CREATE TABLE `quote_requests` (
   `ubicacion` varchar(200) NOT NULL DEFAULT '',
   `mensaje` text DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'new',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `notes` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `quote_requests`
 --
 
-INSERT INTO `quote_requests` (`id`, `tipo_servicio`, `nombre`, `telefono`, `email`, `servicio`, `ubicacion`, `mensaje`, `status`, `created_at`) VALUES
-(1, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'new', '2026-04-24 04:17:22'),
-(2, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'closed', '2026-04-24 04:17:24'),
-(3, 'mudanza', 'cliente favorito', '787-123-4567', 'test@email.com', 'Transporte de Muebles', 'san juan a caguas', 'necesito mover 2 muebles que usamos para entrevistas', 'contacted', '2026-04-24 04:35:51'),
-(4, 'mudanza', 'Juan del Pueblo', '787-332-9940', 'test@mail.com', 'Carga y Descarga', 'Colombia a Puerto Rico', 'No preguntes mucho.', 'contacted', '2026-04-24 05:20:18'),
-(5, 'mudanza', 'Jaime', '7871225115', 'ttrpe@gmail.com', 'Mudanza Residencial', 'Ponce a Cayey', 'hola', 'closed', '2026-04-24 16:50:19'),
-(6, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', '44444444', 'Pintura', 'san german', 'casa', 'new', '2026-04-25 00:42:00'),
-(7, 'mejoras', 'Juan', '7878878787', 'jajajajajaja', 'Limpieza', 'San juan', 'Casa', 'new', '2026-04-25 00:55:37'),
-(8, 'mejoras', 'Juan', '7878878787', 'rtttt', 'Pintura', 'San juan', 'Hola', 'new', '2026-04-25 13:48:35'),
-(9, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Embalaje y ProtecciÃ³n', 'san german', '', 'new', '2026-05-03 20:32:09'),
-(10, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Pintura', 'san german', 'hola', 'closed', '2026-05-03 21:29:52'),
-(11, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Mudanza Residencial', 'san german', 'a', 'new', '2026-05-03 21:33:53'),
-(12, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Lavado de Piso con Scrubber', 'san german', 'hola', 'closed', '2026-05-04 15:21:28'),
-(13, 'mudanza', 'josue torres', '7875438201', 'randytorres7825@gmail.com', 'Mudanza Residencial', 'Lajas', 'mudanza\r\nnevera y estufa', 'new', '2026-05-04 15:33:51'),
-(14, 'mejoras', 'josue torres', '7875438201', 'randytorres7825@gmail.com', 'Pre/Post Mudanza', 'Lajas', 'Limpieza profunda de pisos antes de mudanza', 'closed', '2026-05-04 15:34:53'),
-(15, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Mudanza Residencial', '', '', 'new', '2026-05-04 15:44:55'),
-(16, 'mudanza', 'Miguel Toro', '7875496586', 'juan.ori@gmail.com', 'Mudanza Residencial', 'Hormigueros a mayaguez', 'mudanza de 2 neveras y una estufa.', 'contacted', '2026-05-04 15:57:08'),
-(17, 'mudanza', 'Angel Josue', '7875432156', 'angelmi@gmail.com', 'Transporte de Muebles', 'Sangerman a Orocovis', 'necesito mover 1 mueble de berrios a orocovis.', 'new', '2026-05-04 15:59:01'),
-(18, 'mejoras', 'carlos Rodriguez', '9396542378', 'carlosrodz@yahoo.com', 'Limpieza a MÃ¡quina de PresiÃ³n', 'cabo rojo', 'necesito un lavado de maquina de presion en mi propiedad en las aceras manchadas de pintura y limo.', 'new', '2026-05-04 16:00:26');
+INSERT INTO `quote_requests` (`id`, `tipo_servicio`, `nombre`, `telefono`, `email`, `servicio`, `ubicacion`, `mensaje`, `status`, `created_at`, `notes`) VALUES
+(1, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'new', '2026-04-24 04:17:22', NULL),
+(2, 'mejoras', 'PRUEBA', '7873-313-20222', 'pruebasolicitud@gmail.com', 'Propiedades', 'Maya', 'Mudarme!', 'closed', '2026-04-24 04:17:24', NULL),
+(3, 'mudanza', 'cliente favorito', '787-123-4567', 'test@email.com', 'Transporte de Muebles', 'san juan a caguas', 'necesito mover 2 muebles que usamos para entrevistas', 'contacted', '2026-04-24 04:35:51', NULL),
+(4, 'mudanza', 'Juan del Pueblo', '787-332-9940', 'test@mail.com', 'Carga y Descarga', 'Colombia a Puerto Rico', 'No preguntes mucho.', 'contacted', '2026-04-24 05:20:18', NULL),
+(5, 'mudanza', 'Jaime', '7871225115', 'ttrpe@gmail.com', 'Mudanza Residencial', 'Ponce a Cayey', 'hola', 'closed', '2026-04-24 16:50:19', NULL),
+(6, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', '44444444', 'Pintura', 'san german', 'casa', 'new', '2026-04-25 00:42:00', NULL),
+(7, 'mejoras', 'Juan', '7878878787', 'jajajajajaja', 'Limpieza', 'San juan', 'Casa', 'new', '2026-04-25 00:55:37', NULL),
+(8, 'mejoras', 'Juan', '7878878787', 'rtttt', 'Pintura', 'San juan', 'Hola', 'new', '2026-04-25 13:48:35', NULL),
+(9, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Embalaje y ProtecciÃ³n', 'san german', '', 'new', '2026-05-03 20:32:09', NULL),
+(10, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Pintura', 'san german', 'hola', 'closed', '2026-05-03 21:29:52', NULL),
+(11, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Mudanza Residencial', 'san german', 'a', 'new', '2026-05-03 21:33:53', NULL),
+(12, 'mejoras', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Lavado de Piso con Scrubber', 'san german', 'hola', 'closed', '2026-05-04 15:21:28', NULL),
+(13, 'mudanza', 'josue torres', '7875438201', 'randytorres7825@gmail.com', 'Mudanza Residencial', 'Lajas', 'mudanza\r\nnevera y estufa', 'new', '2026-05-04 15:33:51', NULL),
+(14, 'mejoras', 'josue torres', '7875438201', 'randytorres7825@gmail.com', 'Pre/Post Mudanza', 'Lajas', 'Limpieza profunda de pisos antes de mudanza', 'closed', '2026-05-04 15:34:53', NULL),
+(15, 'mudanza', 'Carlos LÃ³pez MartÃ­nez', '(787) 555-0102', 'torresdiego218@gmail.com', 'Mudanza Residencial', '', '', 'new', '2026-05-04 15:44:55', NULL),
+(16, 'mudanza', 'Miguel Toro', '7875496586', 'juan.ori@gmail.com', 'Mudanza Residencial', 'Hormigueros a mayaguez', 'mudanza de 2 neveras y una estufa.', 'contacted', '2026-05-04 15:57:08', NULL),
+(17, 'mudanza', 'Angel Josue', '7875432156', 'angelmi@gmail.com', 'Transporte de Muebles', 'Sangerman a Orocovis', 'necesito mover 1 mueble de berrios a orocovis.', 'new', '2026-05-04 15:59:01', NULL),
+(18, 'mejoras', 'carlos Rodriguez', '9396542378', 'carlosrodz@yahoo.com', 'Limpieza a MÃ¡quina de PresiÃ³n', 'cabo rojo', 'necesito un lavado de maquina de presion en mi propiedad en las aceras manchadas de pintura y limo.', 'new', '2026-05-04 16:00:26', NULL);
 
 -- --------------------------------------------------------
 
@@ -232,6 +250,7 @@ CREATE TABLE `users` (
   `email` varchar(254) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `role` enum('customer','admin') NOT NULL DEFAULT 'customer',
+  `status` enum('pending','active','rejected') NOT NULL DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -239,16 +258,24 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at`) VALUES
-(1, 'Jaime Muñoz', 'jaime@movegopr.com', '$2y$10$fZBsbnKmb4xawR9sWP6Cmu7QAwckIi7sotblbfJd8or9oKutzx0bG', 'admin', '2026-02-28 08:05:44'),
-(2, 'testuser', 'test@movegopr.com', '$2y$10$4G9SWbzcmEDdd2ZUAIdHT.9YCN.jf2Sry1eRU/Sn0cA46kGGHWD9G', 'admin', '2026-04-04 23:44:25'),
-(4, 'Cuenta Demo', 'demo@movegopr.com', '$2y$10$W7cM5.WYGC2U49rAgD8cZeiNF6UX1zwpDCqLiJeIz39CwTnRn7HRa', 'admin', '2026-04-24 05:54:48'),
-(5, 'UserTestKenneth', 'kennethgonzalezm569@gmail.com', '$2y$10$uFfLPrXaEWc.l6xnP4EScOul62BPCNeV3R8SU/iUEJ6eRQ7M52WIi', 'admin', '2026-04-28 02:13:39'),
-(6, 'KaizerAnkora\'s Org', 'pepe@gmail.com', '$2y$10$uHVbm29o8TyhJjwW6Crwqu78KRaJMuSjK/rTLCkK/VQtBg3PdeKdK', 'admin', '2026-05-04 00:08:04');
+INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `status`, `created_at`) VALUES
+(1, 'Jaime Muñoz', 'jaime@movegopr.com', '$2y$10$fZBsbnKmb4xawR9sWP6Cmu7QAwckIi7sotblbfJd8or9oKutzx0bG', 'admin', 'active', '2026-02-28 08:05:44'),
+(2, 'testuser', 'test@movegopr.com', '$2y$10$4G9SWbzcmEDdd2ZUAIdHT.9YCN.jf2Sry1eRU/Sn0cA46kGGHWD9G', 'admin', 'active', '2026-04-04 23:44:25'),
+(4, 'Cuenta Demo', 'demo@movegopr.com', '$2y$10$W7cM5.WYGC2U49rAgD8cZeiNF6UX1zwpDCqLiJeIz39CwTnRn7HRa', 'admin', 'active', '2026-04-24 05:54:48'),
+(5, 'UserTestKenneth', 'kennethgonzalezm569@gmail.com', '$2y$10$uFfLPrXaEWc.l6xnP4EScOul62BPCNeV3R8SU/iUEJ6eRQ7M52WIi', 'admin', 'active', '2026-04-28 02:13:39'),
+(6, 'KaizerAnkora\'s Org', 'pepe@gmail.com', '$2y$10$uHVbm29o8TyhJjwW6Crwqu78KRaJMuSjK/rTLCkK/VQtBg3PdeKdK', 'admin', 'active', '2026-05-04 00:08:04'),
+(7, 'Future', 'registertest@mail.com', '$2y$10$k8mYFFC7sMxgfswv36smzernFrXjgZoOdpxn7qXwJ4AbGOtYzw3U2', 'customer', 'active', '2026-05-10 20:52:03'),
+(8, 'test', 'test@mail.com', '$2y$10$eyhyyCsB5aj0Hm/pgM8ss.mC4YIje7ce9TsOnCFNUlVbICfXqiQ7W', 'admin', 'pending', '2026-05-10 22:34:09');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `locations`
+--
+ALTER TABLE `locations`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `municipios`
@@ -291,6 +318,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `locations`
+--
+ALTER TABLE `locations`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `municipios`
 --
 ALTER TABLE `municipios`
@@ -318,7 +351,7 @@ ALTER TABLE `quote_requests`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Constraints for dumped tables

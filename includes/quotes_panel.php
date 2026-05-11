@@ -12,19 +12,31 @@
  */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['quote_action'])) {
+    $quote_id   = (int)($_POST['quote_id'] ?? 0);
+    $back_filter = $_POST['back_filter'] ?? 'all';
+
     if ($_POST['quote_action'] === 'update_status') {
-        $quote_id   = (int)$_POST['quote_id'];
         $new_status = $_POST['new_status'] ?? '';
         $allowed_statuses = ['new', 'contacted', 'closed'];
-
         if ($quote_id && in_array($new_status, $allowed_statuses)) {
-            $stmt = $pdo->prepare("UPDATE quote_requests SET status = ? WHERE id = ?");
-            $stmt->execute([$new_status, $quote_id]);
+            $pdo->prepare("UPDATE quote_requests SET status = ? WHERE id = ?")->execute([$new_status, $quote_id]);
         }
+        header("Location: dashboard.php?section=quotes&action=view&id={$quote_id}&filter=" . urlencode($back_filter) . "&msg=status_updated");
+        exit();
     }
-    $back_filter = $_POST['back_filter'] ?? 'all';
-    header("Location: dashboard.php?section=quotes&filter=" . urlencode($back_filter));
-    exit();
+
+    if ($_POST['quote_action'] === 'save_notes') {
+        $notes = trim($_POST['notes'] ?? '');
+        $pdo->prepare("UPDATE quote_requests SET notes = ? WHERE id = ?")->execute([$notes, $quote_id]);
+        header("Location: dashboard.php?section=quotes&action=view&id={$quote_id}&filter=" . urlencode($back_filter) . "&msg=notes_saved");
+        exit();
+    }
+
+    if ($_POST['quote_action'] === 'delete') {
+        $pdo->prepare("DELETE FROM quote_requests WHERE id = ?")->execute([$quote_id]);
+        header("Location: dashboard.php?section=quotes&filter=" . urlencode($back_filter) . "&msg=quote_deleted");
+        exit();
+    }
 }
 
 $action   = $_GET['action'] ?? 'list';
@@ -151,7 +163,17 @@ function tipo_badge($tipo) {
     }
     ?>
 
-    <a href="dashboard.php?section=quotes&filter=<?= urlencode($filter) ?>" class="btn-back">← Volver a Cotizaciones</a>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <a href="dashboard.php?section=quotes&filter=<?= urlencode($filter) ?>" class="btn-back" style="margin-bottom:0;">← Volver a Solicitudes</a>
+        <form method="POST" onsubmit="return confirm('¿Eliminar esta solicitud? Esta acción no se puede deshacer.');">
+            <input type="hidden" name="quote_action" value="delete">
+            <input type="hidden" name="quote_id" value="<?= $q['id'] ?>">
+            <input type="hidden" name="back_filter" value="<?= htmlspecialchars($filter) ?>">
+            <button type="submit" style="background:#dc2626; color:white; border:none; padding:9px 18px; border-radius:6px; font-size:13px; cursor:pointer;">
+                Eliminar solicitud
+            </button>
+        </form>
+    </div>
 
     <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
         <h1 style="margin:0;">Solicitud #<?= $q['id'] ?></h1>
@@ -217,7 +239,7 @@ function tipo_badge($tipo) {
         </div>
     </div>
 
-    <div class="card" style="cursor:default;">
+    <div class="card" style="cursor:default; margin-bottom:20px;">
         <h3 style="margin:0 0 12px; color:#1e3a8a; font-size:15px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
             Estado del Ticket
         </h3>
@@ -236,6 +258,26 @@ function tipo_badge($tipo) {
         </form>
     </div>
 
+    <div class="card" style="cursor:default;">
+        <h3 style="margin:0 0 8px; color:#1e3a8a; font-size:15px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
+            Notas internas
+        </h3>
+        <p style="color:#94a3b8; font-size:13px; margin:0 0 12px;">Solo visible para administradores.</p>
+        <form method="POST">
+            <input type="hidden" name="quote_action" value="save_notes">
+            <input type="hidden" name="quote_id" value="<?= $q['id'] ?>">
+            <input type="hidden" name="back_filter" value="<?= htmlspecialchars($filter) ?>">
+            <textarea name="notes" rows="4"
+                      placeholder="Agrega notas sobre este cliente o el seguimiento..."
+                      style="width:100%; padding:10px 12px; border:1.5px solid #d1d5db; border-radius:8px; font-size:14px; font-family:inherit; resize:vertical; outline:none; box-sizing:border-box; transition:border-color 0.2s;"
+                      onfocus="this.style.borderColor='#1e3a8a'" onblur="this.style.borderColor='#d1d5db'"><?= htmlspecialchars($q['notes'] ?? '') ?></textarea>
+            <button type="submit"
+                    style="margin-top:10px; background:#1e3a8a; color:white; border:none; padding:9px 20px; border-radius:6px; font-size:14px; cursor:pointer;">
+                Guardar notas
+            </button>
+        </form>
+    </div>
+
 <?php else: ?>
 
     <?php
@@ -247,7 +289,7 @@ function tipo_badge($tipo) {
     ?>
 
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h1 style="margin:0;">Cotizaciones</h1>
+        <h1 style="margin:0;">Solicitudes</h1>
         <span style="color:#888; font-size:14px;"><?= $total_all ?> solicitudes en total</span>
     </div>
 
@@ -270,54 +312,44 @@ function tipo_badge($tipo) {
         </a>
     </div>
 
-    <div class="card" style="padding:0; overflow:hidden; cursor:default;">
-        <?php if (empty($quotes)): ?>
-            <p style="padding:30px; color:#888; text-align:center;">
-                No hay cotizaciones <?= $filter !== 'all' ? "con estado «{$filter}»" : '' ?>.
+    <?php if (empty($quotes)): ?>
+        <div class="card" style="cursor:default;">
+            <p style="color:#888; text-align:center;">
+                No hay solicitudes <?= $filter !== 'all' ? "con estado «{$filter}»" : '' ?>.
             </p>
-        <?php else: ?>
-            <div style="overflow-x:auto;">
-                <table class="quote-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Cliente</th>
-                            <th>Servicio</th>
-                            <th>Ubicación</th>
-                            <th>Mensaje</th>
-                            <th>Fecha</th>
-                            <th>Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($quotes as $q): ?>
-                        <tr onclick="window.location='dashboard.php?section=quotes&action=view&id=<?= $q['id'] ?>&filter=<?= urlencode($filter) ?>'">
-                            <td data-label="" style="color:#94a3b8;"><?= $q['id'] ?></td>
-                            <td data-label="Cliente">
-                                <?= tipo_badge($q['tipo_servicio']) ?>
-                                <strong style="display:block; margin-top:5px;"><?= htmlspecialchars($q['nombre']) ?></strong>
-                                <span style="display:block; color:#1e3a8a; font-size:13px; white-space:nowrap;">
-                                    📞 <?= htmlspecialchars($q['telefono']) ?>
-                                </span>
-                                <?php if ($q['email']): ?>
-                                    <span style="display:block; color:#555; font-size:12px; margin-top:2px; white-space:nowrap;">
-                                        ✉ <?= htmlspecialchars($q['email']) ?>
-                                    </span>
-                                <?php endif; ?>
-                            </td>
-                            <td data-label="Servicio" style="white-space:nowrap;"><?= htmlspecialchars($q['servicio'] ?: '—') ?></td>
-                            <td data-label="Ubicación" style="white-space:nowrap; color:#555;"><?= htmlspecialchars($q['ubicacion'] ?: '—') ?></td>
-                            <td data-label="Mensaje" class="mensaje-cell"><?= htmlspecialchars(mb_strimwidth($q['mensaje'] ?: '—', 0, 35, '…')) ?></td>
-                            <td data-label="Fecha" style="white-space:nowrap; color:#888; font-size:13px;">
-                                <?= date('d/m/Y g:ia', strtotime($q['created_at'])) ?>
-                            </td>
-                            <td data-label="Estado"><?= quote_status_badge($q['status']) ?></td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+        </div>
+    <?php else: ?>
+        <div class="quote-grid">
+            <?php foreach ($quotes as $q): ?>
+            <div class="quote-card"
+                 data-status="<?= $q['status'] ?>"
+                 onclick="window.location='dashboard.php?section=quotes&action=view&id=<?= $q['id'] ?>&filter=<?= urlencode($filter) ?>'">
+                <div class="qc-header">
+                    <div class="qc-badges">
+                        <?= tipo_badge($q['tipo_servicio']) ?>
+                        <?= quote_status_badge($q['status']) ?>
+                    </div>
+                    <span class="qc-date"><?= date('d/m/Y', strtotime($q['created_at'])) ?></span>
+                </div>
+                <p class="qc-name"><?= htmlspecialchars($q['nombre']) ?></p>
+                <div class="qc-contact">
+                    <span><i class="fa-solid fa-phone" style="width:14px; color:#94a3b8;"></i> <?= htmlspecialchars($q['telefono']) ?></span>
+                    <?php if ($q['email']): ?>
+                        <span><i class="fa-solid fa-envelope" style="width:14px; color:#94a3b8;"></i> <?= htmlspecialchars($q['email']) ?></span>
+                    <?php endif; ?>
+                </div>
+                <?php if ($q['servicio']): ?>
+                    <p class="qc-service"><i class="fa-solid fa-wrench" style="width:14px; color:#94a3b8;"></i> <?= htmlspecialchars($q['servicio']) ?></p>
+                <?php endif; ?>
+                <?php if ($q['ubicacion']): ?>
+                    <p class="qc-location"><i class="fa-solid fa-location-dot" style="width:14px; color:#94a3b8;"></i> <?= htmlspecialchars($q['ubicacion']) ?></p>
+                <?php endif; ?>
+                <?php if ($q['mensaje']): ?>
+                    <p class="qc-message">"<?= htmlspecialchars(mb_strimwidth($q['mensaje'], 0, 80, '…')) ?>"</p>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
-    </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
 <?php endif; ?>

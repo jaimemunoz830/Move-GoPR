@@ -431,15 +431,6 @@ if ($action === 'list'): ?>
         <a href="dashboard.php?section=properties&action=add" class="btn-primary">+ Nueva Propiedad</a>
     </div>
 
-    <?php if ($msg === 'created'): ?>
-        <div class="alert alert-success">✅ Propiedad añadida exitosamente.</div>
-    <?php elseif ($msg === 'updated'): ?>
-        <div class="alert alert-success">✅ Propiedad actualizada exitosamente.</div>
-    <?php elseif ($msg === 'deleted'): ?>
-        <div class="alert alert-success">🗑 Propiedad eliminada.</div>
-    <?php elseif ($msg === 'notfound'): ?>
-        <div class="alert alert-danger">❌ Propiedad no encontrada.</div>
-    <?php endif; ?>
 
     <?php
     $properties = $pdo->query("
@@ -452,70 +443,55 @@ if ($action === 'list'): ?>
     ")->fetchAll(PDO::FETCH_ASSOC);
     ?>
 
-    <div class="card" style="padding:0; overflow:hidden; cursor:default;">
-        <?php if (empty($properties)): ?>
-            <p style="padding:30px; color:#888; text-align:center;">
+    <?php
+    $type_labels = ['house'=>'Casa','apartment'=>'Apartamento','condo'=>'Condo','land'=>'Terreno','commercial'=>'Comercial'];
+    if (empty($properties)): ?>
+        <div class="card" style="cursor:default;">
+            <p style="color:#888; text-align:center;">
                 No hay propiedades registradas. <a href="dashboard.php?section=properties&action=add">Añadir la primera.</a>
             </p>
-        <?php else: ?>
-            <div style="overflow-x:auto;">
-                <table class="propiedades-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Foto</th>
-                            <th>Título</th>
-                            <th>Tipo</th>
-                            <th>Listado</th>
-                            <th>Precio</th>
-                            <th>Municipio</th>
-                            <th>Estado</th>
-                            <th>Destacado</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($properties as $p): ?>
-                        <tr>
-                            <td data-label="" style="color:#94a3b8;"><?= $p['id'] ?></td>
-                            <td data-label="Foto">
-                                <?php if ($p['image']): ?>
-                                    <img src="<?= htmlspecialchars($p['image']) ?>"
-                                         alt="foto"
-                                         class="prop-foto">
-                                <?php else: ?>
-                                    <div class="no-thumb">Sin foto!</div>
-                                <?php endif; ?>
-                            </td>
-                            <td data-label="Título"><strong><?= htmlspecialchars($p['title']) ?></strong></td>
-                            <td data-label="Tipo" style="text-transform:capitalize;"><?= htmlspecialchars($p['property_type']) ?></td>
-                            <td data-label="Listado"><?= $p['type'] === 'sale' ? 'Venta' : 'Alquiler' ?></td>
-                            <td data-label="Precio">$<?= number_format($p['price'], 2) ?></td> <!-- TODO: Añadir logica /mes a precio de renta -->
-                            <td data-label="Municipio"><?= htmlspecialchars($p['municipality'] ?? '—') ?></td>
-                            <td data-label="Estado"><?= status_badge($p['status']) ?></td>
-                            <td data-label="Destacado" style="text-align:center;">
-                                <?= $p['featured'] ? '⭐' : '—' ?>
-                            </td>
-                            <td data-label="Acciones">
-                                <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-                                    <a href="dashboard.php?section=properties&action=edit&id=<?= $p['id'] ?>"
-                                       class="btn-edit">Editar</a>
+        </div>
+    <?php else: ?>
+        <div class="prop-grid">
+            <?php foreach ($properties as $p): ?>
+            <div class="prop-card">
+                <?php if ($p['image']): ?>
+                    <img src="<?= htmlspecialchars($p['image']) ?>" alt="foto" class="prop-card-img">
+                <?php else: ?>
+                    <div class="prop-card-no-img">Sin foto</div>
+                <?php endif; ?>
 
-                                    <form method="POST"
-                                          onsubmit="return confirm('¿Eliminar «<?= htmlspecialchars(addslashes($p['title'])) ?>»? Esta acción no se puede deshacer.');">
-                                        <input type="hidden" name="form_action" value="delete">
-                                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
-                                        <button type="submit" class="btn-danger">Eliminar</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                <div class="prop-card-body">
+                    <div class="prop-card-badges">
+                        <span class="badge-type"><?= $type_labels[$p['property_type']] ?? ucfirst($p['property_type']) ?></span>
+                        <span class="<?= $p['type'] === 'sale' ? 'badge-sale' : 'badge-rent' ?>">
+                            <?= $p['type'] === 'sale' ? 'Venta' : 'Alquiler' ?>
+                        </span>
+                        <?php if ($p['featured']): ?><span title="Destacado">⭐</span><?php endif; ?>
+                    </div>
+                    <p class="prop-card-title"><?= htmlspecialchars($p['title']) ?></p>
+                    <p class="prop-card-price">
+                        $<?= number_format($p['price'], 0) ?><?= $p['type'] === 'rent' ? '/mes' : '' ?>
+                    </p>
+                    <?php if (!empty($p['municipality'])): ?>
+                        <p class="prop-card-location"><i class="fa-solid fa-location-dot" style="color:#94a3b8; width:14px;"></i> <?= htmlspecialchars($p['municipality']) ?></p>
+                    <?php endif; ?>
+                    <div style="margin-top:4px;"><?= status_badge($p['status']) ?></div>
+                </div>
+
+                <div class="prop-card-footer">
+                    <a href="dashboard.php?section=properties&action=edit&id=<?= $p['id'] ?>" class="btn-edit">Editar</a>
+                    <form method="POST"
+                          onsubmit="return confirm('¿Eliminar «<?= htmlspecialchars(addslashes($p['title'])) ?>»? Esta acción no se puede deshacer.');">
+                        <input type="hidden" name="form_action" value="delete">
+                        <input type="hidden" name="id" value="<?= $p['id'] ?>">
+                        <button type="submit" class="btn-danger">Eliminar</button>
+                    </form>
+                </div>
             </div>
-        <?php endif; ?>
-    </div>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
 <?php
 /**
@@ -731,7 +707,7 @@ elseif ($action === 'add' || $action === 'edit'): ?>
 
         <div class="form-actions">
             <button type="submit" class="btn-primary">
-                <?= $action === 'add' ? '✅ Guardar Propiedad' : '💾 Actualizar Propiedad' ?>
+                <?= $action === 'add' ? 'Guardar Propiedad' : 'Actualizar Propiedad' ?>
             </button>
             <a href="dashboard.php?section=properties" class="btn-secondary">Cancelar</a>
         </div>

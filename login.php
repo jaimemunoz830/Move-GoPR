@@ -3,24 +3,19 @@
  * login.php
  * Pagina para iniciar sesion. Verifica el email y contraseña contra la base de datos, y establece la sesion del usuario.
  * Si el inicio de sesion es exitoso, redirige a dashboard.php. Si no, muestra un mensaje de error.
- * 
- * @autor Jaime A. Muñoz Rodriguez
- * @version 1.0
+ *  
+ * @author Jaime A. Muñoz Rodriguez
+ * @version 2.0
  */
 require_once 'config.php';
-if (session_status() === PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE){
     session_start();
-}
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+} 
 $error = "";
 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $email    = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if (!empty($email) && !empty($password)) {
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
@@ -28,11 +23,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-             $_SESSION['user_id'] = $user['id'];
-             $_SESSION['user_name'] = $user['name'];
-             $_SESSION['role'] = $user['role'];
-             header("Location: dashboard.php");
-             exit();
+            if (($user['status'] ?? 'active') === 'pending') {
+                $error = "Tu cuenta está pendiente de aprobación por el administrador.";
+            } elseif (($user['status'] ?? 'active') === 'rejected') {
+                $error = "Tu solicitud de registro fue rechazada. Contacta al administrador.";
+            } else {
+                $_SESSION['user_id']   = $user['id'];
+                $_SESSION['user_name'] = $user['name'];
+                $_SESSION['role']      = $user['role'];
+                header("Location: dashboard.php");
+                exit();
+            }
         } else {
             $error = "Email o contraseña incorrectos.";
         }
@@ -40,37 +41,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "Por favor, completa todos los campos.";
     }
 }
-include 'header.php';
 ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión — Move & Go PR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
 
-<main class="login-container" style="padding: 100px 20px; min-height: 80vh; display: flex; justify-content: center; align-items: center; background: #f4f7f6;">
-    <div class="card" style="max-width: 400px; width: 100%; padding: 30px; cursor: default;">
-        <h2 style="text-align: center; color: #1e3a8a; margin-bottom: 20px;">Iniciar Sesión</h2>
-        
-        <?php if($error): ?>
-            <p style="color: #dc2626; background: #fef2f2; padding: 10px; border-radius: 5px; font-size: 14px; text-align: center;">
-                <?php echo $error; ?>
-            </p>
+<div class="auth-card">
+
+    <div class="auth-brand">
+        <img src="img/moveandgopr-logo-solito.png" alt="Move & Go PR">
+        <div>
+            <h3>Move & Go PR</h3>
+            <p>Tu hogar, tu mudanza,<br>tu tranquilidad.</p>
+        </div>
+    </div>
+
+    <div class="auth-form-wrap">
+        <h2>Iniciar Sesión</h2>
+        <p class="auth-subtitle">Accede a tu cuenta para continuar.</p>
+
+        <?php if ($error): ?>
+            <div class="auth-alert"><?= htmlspecialchars($error) ?></div>
         <?php endif; ?>
 
-        <form action="login.php" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
-            <div style="margin-bottom: 15px;">
-                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Correo Electrónico</label>
-                <input type="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        <form method="POST" action="login.php">
+            <div class="auth-field">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email"
+                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                       placeholder="tucorreo@ejemplo.com" required>
             </div>
 
-            <div style="margin-bottom: 20px;">
-                <label style="display: block; margin-bottom: 5px; font-weight: bold; color: #333;">Contraseña</label>
-                <input type="password" name="password" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div class="auth-field">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password"
+                       placeholder="••••••••" required>
             </div>
 
-            <button type="submit" class="btn blue" style="width: 100%; border: none; cursor: pointer;">Entrar</button>
+            <button type="submit" class="auth-btn">Entrar</button>
         </form>
 
-        <p style="text-align: center; margin-top: 15px; font-size: 13px; color: #666;">
-            ¿No tienes cuenta? <a href="register.php" style="color: #1e3a8a; font-weight: bold;">Regístrate</a>
-        </p>
+        <p class="auth-link">¿No tienes cuenta? <a href="register.php">Regístrate</a></p>
+        <a class="back-link" href="index.php">← Volver al sitio</a>
     </div>
-</main>
 
-<?php include 'footer.php'; ?>
+</div>
+
+</body>
+</html>
